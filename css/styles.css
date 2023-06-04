@@ -222,17 +222,20 @@ main {
 }
 
 .images-project__aside, .info-project__aside {
-  height: 100vh;
+  height: 100%;
   width: 50%;
-  overflow: auto;
 }
 
-.images-project__aside {
-  background-color: red;
+.images-project__aside img {
+  width: 100%;
 }
 
 .info-project__aside {
-  background-color: grey;
+  padding: 1rem;
+}
+
+.info-project__aside p {
+  line-height: 1.7rem;
 }
 
 footer {
