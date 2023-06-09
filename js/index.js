@@ -5,8 +5,15 @@ if (document.URL.includes("index.html")) {
   const imageSlider = () => {
     setInterval(() => {
       document.querySelector(".img.show").classList.remove("show");
+      document
+        .querySelector(".description-project.show-description-project")
+        .classList.remove("show-description-project");
       const img = document.querySelector(`.img-${counter}`);
+      const descriptionImg = document.querySelector(
+        `.description-project-${counter}`
+      );
       img.classList.add("show");
+      descriptionImg.classList.add("show-description-project");
       counter++;
 
       if (counter > 4) {

@@ -113,9 +113,16 @@ header {
   font-size: 1.2rem;
 }
 
+.description-project {
+  display: none;
+}
+
+.show-description-project {
+  display: block;
+}
+
 .button-container {
   position: absolute;
-  bottom: 1;
   right: 4rem;
   background-color: rgba(255, 255, 255, 0.25);
   padding: 1.5rem 4px;
@@ -355,8 +362,12 @@ footer {
   transition: color 0.4s ease;
 }
 
-.socials a:hover i {
-  color: aqua;
+.socials a:hover .fa-linkedin-square {
+  color: #0e76a8;
+}
+
+.socials a:hover .fa-facebook {
+  color: #3b5998;
 }
 
 .footer-bottom {
