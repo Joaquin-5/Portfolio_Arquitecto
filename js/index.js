@@ -43,3 +43,9 @@ let date = new Date();
 let year = date.getFullYear();
 
 dateFooterChange.innerHTML = year;
+
+// nav scroll
+window.addEventListener("scroll", () => {
+  let nav = document.querySelector("nav");
+  nav.classList.toggle("sticky", window.scrollY > 0);
+});
