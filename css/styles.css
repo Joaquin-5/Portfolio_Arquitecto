@@ -180,7 +180,7 @@ nav {
   align-items: center;
   transition: 0.6s;
   padding: 40px 100px;
-  z-index: 100px;
+  z-index: 10;
 }
 
 nav.sticky {
@@ -273,6 +273,7 @@ main {
 
 .project:hover {
   transform: scale(1.01);
+  z-index: 1;
 }
 
 .project a {
