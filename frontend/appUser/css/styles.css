@@ -165,10 +165,13 @@ header {
 
 .description-project {
   display: none;
+  filter: brightness(0);
+  transition: 3s;
 }
 
 .show-description-project {
   display: block;
+  filter: brightness(1);
 }
 
 nav {
@@ -319,13 +322,15 @@ main {
 
 .projects__main {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
 }
 
 .images-project__aside,
 .info-project__article {
   height: 100%;
-  width: 50%;
+  width: 100%;
 }
 
 .images-project__aside img {
@@ -343,10 +348,13 @@ main {
   flex-direction: column;
   justify-content: space-evenly;
   gap: 50px;
+  width: 80%;
 }
 
-.info-project__article h1 {
+#project-name {
+  font-size: 35px;
   text-align: center;
+  margin: 20px 0;
 }
 
 .info-project__article p {

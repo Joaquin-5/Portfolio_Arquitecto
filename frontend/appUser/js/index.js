@@ -1,17 +1,21 @@
 if (document.URL.includes("index.html")) {
-  // Image slider header
-  let counter = 1;
+  const imageCarrouselContainer = document.querySelector("div.container");
 
   const imageSlider = () => {
+    // Image slider header
+    let counter = 1;
+
     setInterval(() => {
       document.querySelector(".img.show").classList.remove("show");
       document
         .querySelector(".description-project.show-description-project")
         .classList.remove("show-description-project");
+
       const img = document.querySelector(`.img-${counter}`);
       const descriptionImg = document.querySelector(
         `.description-project-${counter}`
       );
+
       img.classList.add("show");
       descriptionImg.classList.add("show-description-project");
       counter++;
@@ -26,13 +30,18 @@ if (document.URL.includes("index.html")) {
 
   //h1 animation text
 
-  const h1 = new SplitType("#name-text");
+  /* const h1 = new SplitType("#name-text");
 
   gsap.to(".char", {
     y: 0,
     stagger: 0.05,
     delay: 0.2,
     duration: 0.1,
+  }); */
+  // nav scroll
+  window.addEventListener("scroll", () => {
+    let nav = document.querySelector("nav");
+    nav.classList.toggle("sticky", window.scrollY > 0);
   });
 }
 
@@ -43,9 +52,3 @@ let date = new Date();
 let year = date.getFullYear();
 
 dateFooterChange.innerHTML = year;
-
-// nav scroll
-window.addEventListener("scroll", () => {
-  let nav = document.querySelector("nav");
-  nav.classList.toggle("sticky", window.scrollY > 0);
-});
