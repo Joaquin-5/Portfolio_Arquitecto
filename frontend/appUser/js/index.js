@@ -1,32 +1,38 @@
-if (document.URL.includes("index.html")) {
-  const imageCarrouselContainer = document.querySelector("div.container");
+const tab = document.querySelector("title");
 
-  const imageSlider = () => {
-    // Image slider header
-    let counter = 1;
+const imageCarrouselContainer =
+  document.querySelector("div.container").childElementCount;
 
-    setInterval(() => {
-      document.querySelector(".img.show").classList.remove("show");
+const imageSlider = () => {
+  let counter = 1;
+
+  setInterval(() => {
+    document.querySelector(".img.show").classList.remove("show");
+    document.URL.includes("index.html") &&
       document
         .querySelector(".description-project.show-description-project")
         .classList.remove("show-description-project");
 
-      const img = document.querySelector(`.img-${counter}`);
-      const descriptionImg = document.querySelector(
-        `.description-project-${counter}`
-      );
+    const img = document.querySelector(`.img-${counter}`);
+    const descriptionImg =
+      document.URL.includes("index.html") &&
+      document.querySelector(`.description-project-${counter}`);
 
-      img.classList.add("show");
+    img.classList.add("show");
+    document.URL.includes("index.html") &&
       descriptionImg.classList.add("show-description-project");
-      counter++;
+    counter++;
 
-      if (counter > 4) {
-        counter = 1;
-      }
-    }, 5000);
-  };
+    if (counter > imageCarrouselContainer) {
+      counter = 1;
+    }
+  }, 5000);
+};
 
-  imageSlider();
+imageSlider();
+
+if (document.URL.includes("index.html")) {
+  tab.innerHTML = "BFA - Fabián Butera Arquitecto";
 
   //h1 animation text
 
@@ -38,11 +44,16 @@ if (document.URL.includes("index.html")) {
     delay: 0.2,
     duration: 0.1,
   }); */
+
   // nav scroll
   window.addEventListener("scroll", () => {
     let nav = document.querySelector("nav");
     nav.classList.toggle("sticky", window.scrollY > 0);
   });
+}
+
+if (document.URL.includes("project.html")) {
+  tab.innerHTML = "Nombre del proyecto - BFA";
 }
 
 // date change footer
