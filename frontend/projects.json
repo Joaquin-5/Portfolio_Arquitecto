@@ -1,0 +1,62 @@
+[
+  {
+    "titulo": "Edificio Vanguardia",
+    "fecha": "15/06/2023",
+    "lugar": "Barcelona, España",
+    "imagenes": [
+      {
+        "url": "https://ejemplo.com/imagen1_1.jpg",
+        "descripcion": "Fachada moderna del Edificio Vanguardia"
+      },
+      {
+        "url": "https://ejemplo.com/imagen1_2.jpg",
+        "descripcion": "Vista aérea del Edificio Vanguardia"
+      },
+      {
+        "url": "https://ejemplo.com/imagen1_3.jpg",
+        "descripcion": "Vista nocturna del Edificio Vanguardia"
+      }
+    ],
+    "descripcion_larga": "El Edificio Vanguardia es una muestra impresionante de la arquitectura contemporánea. Diseñado por el renombrado arquitecto Laura Martínez, este edificio de uso mixto combina elementos de diseño sostenible con líneas audaces y geometría única. Situado en el corazón de Barcelona, se destaca por su fachada de vidrio y acero que maximiza la entrada de luz natural. Con una altura de 20 pisos, alberga oficinas, espacios comerciales y residencias de lujo. La estructura juega con la interacción entre los espacios interiores y exteriores, creando un ambiente fluido y abierto en cada nivel."
+  },
+  {
+    "titulo": "Museo Serenidad Zen",
+    "fecha": "02/11/2023",
+    "lugar": "Kioto, Japón",
+    "imagenes": [
+      {
+        "url": "https://ejemplo.com/imagen2_1.jpg",
+        "descripcion": "Jardín japonés sereno en el Museo Serenidad Zen"
+      },
+      {
+        "url": "https://ejemplo.com/imagen2_2.jpg",
+        "descripcion": "Interior minimalista del Museo Serenidad Zen"
+      },
+      {
+        "url": "https://ejemplo.com/imagen2_3.jpg",
+        "descripcion": "Detalle arquitectónico en el Museo Serenidad Zen"
+      }
+    ],
+    "descripcion_larga": "El Museo Serenidad Zen es un lugar emblemático en Kioto, Japón, que combina la belleza natural de un jardín japonés tradicional con la arquitectura minimalista japonesa. Este museo es un reflejo perfecto de la estética Zen, donde la simplicidad y la serenidad se entrelazan para crear una experiencia única."
+  },
+  {
+    "titulo": "Torre Lumina",
+    "fecha": "10/03/2023",
+    "lugar": "Dubái, Emiratos Árabes Unidos",
+    "imagenes": [
+      {
+        "url": "https://ejemplo.com/imagen3_1.jpg",
+        "descripcion": "Vista nocturna de la Torre Lumina iluminada"
+      },
+      {
+        "url": "https://ejemplo.com/imagen3_2.jpg",
+        "descripcion": "Vista desde la base de la Torre Lumina"
+      },
+      {
+        "url": "https://ejemplo.com/imagen3_3.jpg",
+        "descripcion": "Jardines suspendidos en la Torre Lumina"
+      }
+    ],
+    "descripcion_larga": "La Torre Lumina, diseñada por el famoso arquitecto Amir Khan, es una maravilla futurista en el horizonte de Dubái. Esta torre de 150 pisos redefine la estética moderna con su fachada de vidrio curvado y luces LED que cambian de color. Además de ser un rascacielos residencial, la Torre Lumina alberga jardines suspendidos en varias alturas y espacios de entretenimiento de alta gama. La estructura incorpora tecnologías ecológicas avanzadas para minimizar su huella de carbono, y su diseño audaz la convierte en un hito icónico en la ciudad del futuro."
+  }
+]

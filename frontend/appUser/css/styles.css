@@ -151,7 +151,8 @@ header {
 }
 
 .project__info-container h2,
-.project__info-container p {
+.project__info-container p,
+.no-projects__title {
   color: #ffffff;
 }
 
@@ -318,6 +319,7 @@ main {
 .icon-text {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .projects__main {
@@ -329,6 +331,7 @@ main {
 
 .images-project__aside,
 .info-project__article {
+  display: flex;
   height: 100%;
   width: 100%;
 }
@@ -365,7 +368,6 @@ main {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  gap: 0.5rem;
 }
 
 footer {
