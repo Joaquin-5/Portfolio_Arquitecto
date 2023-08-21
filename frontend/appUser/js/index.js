@@ -70,13 +70,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          data.map((project, id) => {
-            projectsContainer.innerHTML += `<section class="project" key=${id}>
+          data.length > 0
+            ? data.map((project, id) => {
+                projectsContainer.innerHTML += `<section class="project" key=${id}>
             <a href="./project.html">
               <img src="./img/landscape2.avif" alt="" />
               <div class="project__content-container">
                 <div class="project-data">
-                  <p>${project.fecha}</p>
+                  <p>Fecha del Proyecto: ${project.fecha}</p>
                   <p class="icon-text">
                     <span class="material-symbols-outlined"> location_on </span
                     >${project.lugar}
@@ -86,7 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
             </a>
           </section>`;
-          });
+              })
+            : (projectsContainer.innerHTML += `<h2 class="no-projects__title">¡No hay proyectos publicados todavía!</h2>`);
         })
         .catch((error) => {
           console.error("Error al cargar el archivo JSON:", error);
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     getProjects(url);
 
-    projectsContainer.addEventListener("click", function (event) {
+    projectsContainer.addEventListener("click", (event) => {
       event.preventDefault();
       const clickedSection = event.target.closest("section");
 
@@ -105,29 +107,28 @@ document.addEventListener("DOMContentLoaded", () => {
         getProject(key);
       }
     });
-
-    /* if (projectsContainer.childElementCount < 1) {
-      projectsContainer.innerHTML += `<h2 class="no-projects__title">¡No hay proyectos publicados todavía!</h2>`;
-    } */
   }
 
   if (document.URL.includes("project.html")) {
     const urlParams = new URLSearchParams(window.location.search);
     const key = urlParams.get("key");
 
+    const imageSlider = document.querySelector("div.container");
     const projectTitle = document.querySelector("h1#project-name");
-    const placeProject = document.querySelector("h2.icon-text");
+    const placeProject = document.querySelector("span.location");
     const dateProject = document.querySelector("h2.date-project");
     const descriptionProject = document.querySelector("p");
 
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data[key]);
-        title.textContent = `${data[key].titulo} - BFA`;
+        /* imageSlider.map((image, i) => {
+
+        }) */
+        title.textContent = `BFA - ${data[key].titulo}`;
         projectTitle.textContent = `${data[key].titulo}`;
         placeProject.textContent = `${data[key].lugar}`;
-        dateProject.textContent = `${data[key].fecha}`;
+        dateProject.textContent = `Fecha del Proyecto: ${data[key].fecha}`;
         descriptionProject.textContent = `${data[key].descripcion_larga}`;
       });
   }
