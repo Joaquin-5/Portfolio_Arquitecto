@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const projectsContainer = document.querySelector("article.project-container");
 
   // FAKE API
-  const url = "http://127.0.0.1:5500/frontend/projects.json";
+  const url = "http://127.0.0.1:5500/frontend/appUser/projects.json";
 
   const imageSlider = () => {
     let counter = 1;
