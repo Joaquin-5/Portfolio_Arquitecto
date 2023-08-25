@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
           errorMessage.classList.remove("error");
         errorMessage.classList.add(errorBoolean ? "error" : "accuracy");
         errorMessage.textContent = compararData(data);
+        if (compararData(data) === "Bienvenido de vuelta Fabian") {
+          window.location.href = "dashboard.html";
+        }
     }
   });
   emailValue = "";
