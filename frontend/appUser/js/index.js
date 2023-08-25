@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const projectsContainer = document.querySelector("article.project-container");
 
   // FAKE API
-  const url = "http://127.0.0.1:5500/frontend/appUser/projects.json";
+  const url = "http://127.0.0.1:5500/frontend/projects.json";
 
   const imageSlider = () => {
     let counter = 1;
@@ -122,9 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        /* imageSlider.map((image, i) => {
-
-        }) */
+        /* imageSlider.map((image) => {
+          imageSlider.innerHTML += `<img src=${image.url} alt=${image.descripcion} class="img img-1 show"/>`;
+        }); */
         title.textContent = `BFA - ${data[key].titulo}`;
         projectTitle.textContent = `${data[key].titulo}`;
         placeProject.textContent = `${data[key].lugar}`;

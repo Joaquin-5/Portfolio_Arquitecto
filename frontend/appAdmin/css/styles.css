@@ -4,3 +4,11 @@
     box-sizing: border-box;
     font-family: "Open Sans", sans-serif;
 }
+
+.accuracy {
+    color: #0f0;
+}
+
+.error {
+    color: #f00;
+}
