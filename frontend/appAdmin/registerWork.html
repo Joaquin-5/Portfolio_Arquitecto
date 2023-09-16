@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="shortcut icon" href="./img/logoBFA.jpg" type="image/x-icon" />
+    <link rel="shortcut icon" href="./img/logoBFA.jpg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;500;700&display=swap"
       rel="stylesheet"
@@ -12,17 +12,40 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <h1>Nueva Obra</h1>
-	<section class="new-work__container">
-		<form>
-			<label for="title">Nombre de la obra</label>
-			<input type="text" name="title" id="title">
-			<label for="location">Ubicación</label>
-			<input type="text" name="location" id="location">
-
-		</form>
-	</section>
+    <h1>Registrar Nueva Obra</h1>
     <a href="./dashboard.html">Volver</a>
+    <section class="new-work__container">
+      <form class="register-work">
+        <label for="title">Nombre de la obra</label>
+        <input type="text" name="title" id="title" placeholder="Nombre de la obra"/>
+        <label for="location">Ubicación</label>
+        <input type="text" name="location" id="location" placeholder="Ubicación"/>
+        <label for="startdate">Fecha de inicio</label>
+        <input type="date" name="startdate" id="startdate" />
+        <label for="enddate">Fecha de finalización</label>
+        <input type="date" name="enddate" id="enddate" />
+        <div id="camposImagenes">
+          <div class="imagen-campo">
+            <label for="imagen1">Imagen:</label>
+            <input type="file" id="imagen1" name="imagen1" accept="image/*" />
+            <label for="descriptionImage"
+              >Descripción de la imágen (máx. 50 caracteres):</label
+            >
+            <input
+              type="text"
+              id="descriptionImage"
+              name="descriptionImage"
+              placeholder="Descripción de la imágen"
+            />
+            <span class="contadorCaracteres">0 / 50</span>
+          </div>
+        </div>
+        <button type="button" id="agregarImagen">Agregar otra Imagen</button>
+        <label for="description">Descripción de la obra</label>
+        <textarea name="description" id="description" cols="30" rows="10" placeholder="Descripción de la obra"></textarea>
+        <input type="submit" value="Registrar">
+      </form>
+    </section>
     <script src="./js/index.js"></script>
   </body>
 </html>

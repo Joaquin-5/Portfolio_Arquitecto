@@ -5,8 +5,20 @@
   font-family: "Open Sans", sans-serif;
 }
 
+body {
+  height: 100vh;
+}
+
 h1 {
   text-align: center;
+}
+
+form {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .accuracy {
@@ -17,8 +29,9 @@ h1 {
   color: #f00;
 }
 
-.fa-pen-to-square, .fa-trash {
-    color: #000000;
+.fa-pen-to-square,
+.fa-trash {
+  color: #000000;
 }
 
 table {
@@ -36,4 +49,49 @@ th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+.admin-login,
+.no-works-yet-container,
+.new-work__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-works-yet-container {
+  gap: 1rem;
+}
+
+a[href="./registerWork.html"] {
+  text-decoration: none;
+  color: #000000;
+}
+
+section.admin-login form input,
+form.register-work input {
+  width: 100%;
+  outline: none;
+}
+
+form.register-work {
+  height: 100%;
+  gap: 10px;
+}
+
+#camposImagenes {
+  width: 100%;
+}
+
+.imagen-campo {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form.register-work textarea {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100px;
 }

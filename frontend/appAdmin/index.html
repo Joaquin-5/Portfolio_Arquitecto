@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="./img/logoBFA.jpg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../common/css/normalize.css">
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body>
-  <h1>BFA - Panel de administración</h1>
-  <section class="form-container">
-    <form>
-      <label for="email">Email</label>
-      <input type="text" name="email" id="email">
-      <label for="password">Contraseña</label>
-      <input type="password" name="password" id="password">
-      <input type="submit" value="Enviar">
-    </form>
-  </section>
+    <link rel="stylesheet" href="../common/css/normalize.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <h1>BFA - Panel de administración</h1>
+    <section class="admin-login">
+      <form>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+        <label for="password">Contraseña</label>
+        <input type="password" name="password" id="password" />
+        <input type="submit" value="Enviar" />
+      </form>
+    </section>
 
-  <script src="./js/index.js"></script>
-</body>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCulGHCiKhTSdL3L7IVi1q7DdP42rf-upA",
+        authDomain: "portfolioarquitecto.firebaseapp.com",
+        projectId: "portfolioarquitecto",
+        storageBucket: "portfolioarquitecto.appspot.com",
+        messagingSenderId: "1052297305390",
+        appId: "1:1052297305390:web:9829cd38bd2daf74feeebf",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+    </script>
+    <script src="./js/index.js"></script>
+  </body>
 </html>
