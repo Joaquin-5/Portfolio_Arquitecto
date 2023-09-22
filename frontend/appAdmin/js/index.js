@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const nuevaFila = document.createElement("tr");
 
         nuevaFila.innerHTML = `
-        <td>${i + 1}</td>
+        <td class="id-work">${i + 1}</td>
         <td>Alfreds Futterkiste</td>
         <td>
             <a href="#" class="edit-work">
@@ -147,16 +147,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const editButtons = document.querySelectorAll("a.edit-work");
     const deleteButtons = document.querySelectorAll("a.delete-work");
+    const idWork = document.querySelectorAll("td.id-work");
 
     editButtons.forEach((nodo) => {
       nodo.addEventListener("click", () => {
-        alert("Se hizo click en editar botón...");
+        alert("Se hizo click en editar obra con el id " + idWork);
       });
     });
 
     deleteButtons.forEach((nodo) => {
       nodo.addEventListener("click", () => {
-        alert("Se hizo click en eliminar botón...");
+        alert("Se hizo click en eliminar obra con el id " + idWork);
       });
     });
   }
@@ -172,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nuevoCampo.innerHTML = `
         <label for="imagen${contadorImagenes}">Imagen:</label>
         <input type="file" id="imagen${contadorImagenes}" name="imagen${contadorImagenes}" accept="image/*"/>
-        <label for="descripcion${contadorImagenes}">Descripción (máx. 50 caracteres):</label>
+        <label for="descripcion${contadorImagenes}">Descripción de la imágen (máx. 50 caracteres):</label>
         <input type="text" id="descripcion${contadorImagenes}" name="descripcion${contadorImagenes}" placeholder="Descripcion de la imágen"/>
         <span class="contadorCaracteres">0 / 50</span>
     `;
@@ -225,37 +226,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const fechaInicioValue = new Date(fechaInicio.value);
       const fechaFinValue = new Date(fechaFin.value);
 
-      if (fechaInicioValue > fechaFinValue) {
+      if (fechaInicioValue >= fechaFinValue) {
         alert(
-          "La fecha de inicio no puede ser mayor que la fecha de finalización."
+          "La fecha de inicio no puede ser mayor o igual que la fecha de finalización."
         );
         fechaFin.value = "";
       }
     });
 
-    // Persistencia de los datos del formulario en el localStorage
+    // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
+    let formularioEditado = false;
+
+    registrarNuevaObraForm.addEventListener("input", () => {
+      formularioEditado = true;
+    });
+
+    window.addEventListener("beforeunload", (e) => {
+      if (formularioEditado) {
+        e.preventDefault();
+        e.returnValue = ''; 
+        return '¡Atención! Hay cambios no guardados en el formulario.';
+      }
+    });
+
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
       console.log("Se hizo click en registrar...");
-
-      const formDataObject = {};
-      const formFields = this.elements;
-
-      for (let i = 0; i < formFields.length; i++) {
-        const field = formFields[i];
-
-        if (field.name && field.type !== "submit") {
-          if (field.type === "file") {
-            if (field.files.length > 0) {
-              formDataObject[field.name] = field.files[0];
-            } else {
-              formDataObject[field.name] = null;
-            }
-          } else {
-            formDataObject[field.name] = field.value;
-          }
-        }
-      }
     });
   }
 });

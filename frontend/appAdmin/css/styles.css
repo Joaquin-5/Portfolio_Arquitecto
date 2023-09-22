@@ -14,7 +14,7 @@ h1 {
 }
 
 form {
-  width: 400px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,6 +27,10 @@ form {
 
 .error {
   color: #f00;
+}
+
+.create-work {
+  text-align: right;
 }
 
 .fa-pen-to-square,
@@ -77,6 +81,7 @@ form.register-work input {
 form.register-work {
   height: 100%;
   gap: 10px;
+  margin-bottom: 10rem;
 }
 
 #camposImagenes {
@@ -94,4 +99,10 @@ form.register-work textarea {
   min-width: 100%;
   max-width: 100%;
   min-height: 100px;
+}
+
+@media (min-width: 768px) {
+  form {
+    width: 400px;
+  }
 }
