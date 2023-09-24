@@ -1,3 +1,5 @@
+// import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const head = document.querySelector("head");
   const title = document.createElement("title");
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ) {
             errorBoolean = true;
           }
+          // loginAdmin(data);
           message.classList.contains("error") &&
             message.classList.remove("error");
           message.classList.add(errorBoolean ? "error" : "accuracy");
@@ -82,9 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "dashboard.html";
           }
       }
+      emailValue = "";
+      passwordValue = "";
     });
-    emailValue = "";
-    passwordValue = "";
   }
 
   if (document.URL.includes("dashboard.html")) {
@@ -164,22 +167,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (document.URL.includes("registerWork.html")) {
     let contadorImagenes = 1;
+    let formularioEditado = false;
 
     // Función para agregar campos de imágenes
     function agregarCampoImagen() {
       contadorImagenes++;
+      formularioEditado = true;
       const nuevoCampo = document.createElement("div");
       nuevoCampo.classList.add("imagen-campo");
       nuevoCampo.innerHTML = `
-        <label for="imagen${contadorImagenes}">Imagen:</label>
-        <input type="file" id="imagen${contadorImagenes}" name="imagen${contadorImagenes}" accept="image/*"/>
-        <label for="descripcion${contadorImagenes}">Descripción de la imágen (máx. 50 caracteres):</label>
-        <input type="text" id="descripcion${contadorImagenes}" name="descripcion${contadorImagenes}" placeholder="Descripcion de la imágen"/>
+        <label for="image${contadorImagenes}">Imagen:</label>
+        <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
+        <label for="descriptionImage${contadorImagenes}">Descripción de la imágen (máx. 50 caracteres):</label>
+        <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
         <span class="contadorCaracteres">0 / 50</span>
     `;
       document.getElementById("camposImagenes").appendChild(nuevoCampo);
       const nuevoInput = nuevoCampo.querySelector(
-        `#descripcion${contadorImagenes}`
+        `#descriptionImage${contadorImagenes}`
       );
       const nuevoContador = nuevoCampo.querySelector(".contadorCaracteres");
 
@@ -193,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("agregarImagen")
       .addEventListener("click", agregarCampoImagen);
 
-    const descripcionInput = document.getElementById("descriptionImage");
+    const descripcionInput = document.getElementById("descriptionImage1");
     const contadorCaracteres = document.querySelector(".contadorCaracteres");
 
     descripcionInput.addEventListener("input", () => {
@@ -208,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         input.style.borderColor = "red";
         contadorCaracteres.style.color = "red";
       } else {
+        input.style.borderColor = "black";
         contadorCaracteres.style.color = "black";
       }
     }
@@ -235,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
-    let formularioEditado = false;
 
     registrarNuevaObraForm.addEventListener("input", () => {
       formularioEditado = true;
@@ -244,14 +249,37 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("beforeunload", (e) => {
       if (formularioEditado) {
         e.preventDefault();
-        e.returnValue = ''; 
-        return '¡Atención! Hay cambios no guardados en el formulario.';
+        e.returnValue = "";
+        return "¡Atención! Hay cambios no guardados en el formulario.";
       }
     });
 
+    const nombreObra = document.querySelector("input#title");
+    const ubicacion = document.querySelector("input#location");
+    const diaInicio = document.querySelector("input#startdate");
+    const diaFinalizacion = document.querySelector("input#enddate");
+    const descripcionObra = document.querySelector("textarea#descriptionWork");
+
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      console.log("Se hizo click en registrar...");
+
+      const imageFields = document.querySelector("#camposImagenes");
+      console.log(imageFields);
+      let workName = nombreObra.value;
+      let location = ubicacion.value;
+      let startdate = diaInicio.value;
+      let endDate = diaFinalizacion.value;
+      let workDescription = descripcionObra.value;
+
+      let data = {
+        workName,
+        location,
+        startdate,
+        endDate,
+        workDescription,
+      };
+
+      console.log(data);
     });
   }
 });
