@@ -1,4 +1,4 @@
-// import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
+import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const head = document.querySelector("head");
@@ -263,8 +263,29 @@ document.addEventListener("DOMContentLoaded", () => {
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const imageFields = document.querySelector("#camposImagenes");
-      console.log(imageFields);
+      const imageFields = document.querySelectorAll(".imagen-campo");
+      const imagesData = [];
+
+      imageFields.forEach((contenedor, index) => {
+        // Encontrar los inputs dentro de cada contenedor
+        const inputImagen = contenedor.querySelector(`#image${index + 1}`);
+        const inputDescripcion = contenedor.querySelector(
+          `#descriptionImage${index + 1}`
+        );
+
+        // Hacer lo que necesites con los inputs, por ejemplo, acceder a sus valores
+        const valorImagen = inputImagen.value;
+        const valorDescripcion = inputDescripcion.value;
+
+        // Puedes realizar operaciones específicas con estos valores
+        console.log(`Valor del input imagen ${index + 1}: ${valorImagen}`);
+        console.log(
+          `Valor del input descripción ${index + 1}: ${valorDescripcion}`
+        );
+
+        imagesData.push({ imagen: valorImagen, descripcion: valorDescripcion });
+      });
+
       let workName = nombreObra.value;
       let location = ubicacion.value;
       let startdate = diaInicio.value;
@@ -276,10 +297,12 @@ document.addEventListener("DOMContentLoaded", () => {
         location,
         startdate,
         endDate,
+        imagesData,
         workDescription,
       };
 
-      console.log(data);
+      saveWork(data)
+      // console.log(data);
     });
   }
 });
