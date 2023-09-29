@@ -9,6 +9,10 @@ body {
   height: 100vh;
 }
 
+.toast-notification {
+  max-width: 80%;
+}
+
 h1 {
   text-align: center;
 }
@@ -81,7 +85,7 @@ form.register-work input {
 form.register-work {
   height: 100%;
   gap: 10px;
-  margin-bottom: 10rem;
+  margin-bottom: 2rem;
 }
 
 #camposImagenes {
@@ -104,5 +108,9 @@ form.register-work textarea {
 @media (min-width: 768px) {
   form {
     width: 400px;
+  }
+
+  .toast-notification {
+    max-width: fit-content;
   }
 }

@@ -1,4 +1,4 @@
-import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
+// import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const head = document.querySelector("head");
@@ -6,12 +6,34 @@ document.addEventListener("DOMContentLoaded", () => {
   title.textContent = "BFA - Panel de administración";
   head.appendChild(title);
 
+  const showToastify = (mensaje, avatarHTML) => {
+    Toastify({
+      text: mensaje,
+      avatar: "",
+      gravity: "top",
+      position: "center",
+      className: "toast-notification",
+      duration: 800000,
+      style: {
+        background: "#ffffff",
+        color: "#000000",
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+        cursor: "auto",
+      },
+    }).showToast();
+
+    const toast = document.querySelector(".toast-notification");
+    toast.querySelector(".toastify-avatar").innerHTML = avatarHTML;
+  };
+
   if (document.URL.includes("index.html")) {
     const formContainer = document.querySelector("section.admin-login");
     const form = document.querySelector("form");
 
     const messagesContainer = document.createElement("div");
-    messagesContainer.classList.add("errors-container");
+    messagesContainer.classList.add("messages-container");
     formContainer.appendChild(messagesContainer);
 
     const message = document.createElement("span");
@@ -97,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createNewWork.classList.add("create-work");
     createNewWork.textContent = "Nueva Obra";
 
-    let lengthProjects = 2;
+    let lengthProjects = 0;
     let labels = ["ID", "Título", "Editar", "Eliminar"];
 
     if (lengthProjects > 0) {
@@ -166,8 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (document.URL.includes("registerWork.html")) {
-    let contadorImagenes = 1;
     let formularioEditado = false;
+    let contadorImagenes = 1;
 
     // Función para agregar campos de imágenes
     function agregarCampoImagen() {
@@ -181,7 +203,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="descriptionImage${contadorImagenes}">Descripción de la imágen (máx. 50 caracteres):</label>
         <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
         <span class="contadorCaracteres">0 / 50</span>
+        <button type="button" class="eliminarCampo">Eliminar</button>
     `;
+      const eliminarBoton = nuevoCampo.querySelector(".eliminarCampo");
+      eliminarBoton.addEventListener("click", () => {
+        document.getElementById("camposImagenes").removeChild(nuevoCampo);
+      });
+
       document.getElementById("camposImagenes").appendChild(nuevoCampo);
       const nuevoInput = nuevoCampo.querySelector(
         `#descriptionImage${contadorImagenes}`
@@ -191,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
       nuevoInput.addEventListener("input", () => {
         actualizarContador(nuevoInput, nuevoContador);
       });
-      return contadorImagenes;
     }
 
     document
@@ -210,14 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
       contadorCaracteres.textContent = `${longitudActual} / 50`;
 
       if (longitudActual > 50) {
-        input.style.borderColor = "red";
-        contadorCaracteres.style.color = "red";
+        input.style.borderColor = "#ff0000";
+        contadorCaracteres.style.color = "#ff0000";
       } else {
-        input.style.borderColor = "black";
-        contadorCaracteres.style.color = "black";
+        input.style.borderColor = "#000000";
+        contadorCaracteres.style.color = "#000000";
       }
     }
 
+    const newWorkFormContainer = document.querySelector(".new-work__container");
     const registrarNuevaObraForm = document.querySelector("form.register-work");
 
     const fechaInicio = document.querySelector(
@@ -240,8 +268,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
+    fechaInicio.addEventListener("change", () => {
+      const fechaInicioValue = new Date(fechaInicio.value);
+      const fechaFinValue = new Date(fechaFin.value);
 
+      if (fechaInicioValue >= fechaFinValue) {
+        alert(
+          "La fecha de inicio no puede ser mayor o igual que la fecha de finalización."
+        );
+        fechaFin.value = "";
+      }
+    });
+
+    // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
     registrarNuevaObraForm.addEventListener("input", () => {
       formularioEditado = true;
     });
@@ -260,17 +299,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const diaFinalizacion = document.querySelector("input#enddate");
     const descripcionObra = document.querySelector("textarea#descriptionWork");
 
+    const messagesContainer = document.createElement("div");
+    messagesContainer.classList.add("messages-container");
+    newWorkFormContainer.appendChild(messagesContainer);
+
+    const message = document.createElement("span");
+    messagesContainer.appendChild(message);
+
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      let errorBoolean = false;
+      let errorImagenes = false;
+      let data = {};
 
       const imageFields = document.querySelectorAll(".imagen-campo");
       const imagesData = [];
 
-      imageFields.forEach((contenedor, index) => {
+      imageFields.forEach((contenedor, i) => {
         // Encontrar los inputs dentro de cada contenedor
-        const inputImagen = contenedor.querySelector(`#image${index + 1}`);
+        const inputImagen = contenedor.querySelector(`#image${i + 1}`);
         const inputDescripcion = contenedor.querySelector(
-          `#descriptionImage${index + 1}`
+          `#descriptionImage${i + 1}`
         );
 
         // Hacer lo que necesites con los inputs, por ejemplo, acceder a sus valores
@@ -278,12 +327,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const valorDescripcion = inputDescripcion.value;
 
         // Puedes realizar operaciones específicas con estos valores
-        console.log(`Valor del input imagen ${index + 1}: ${valorImagen}`);
+        /* console.log(`Valor del input imagen ${i + 1}: ${valorImagen}`);
         console.log(
-          `Valor del input descripción ${index + 1}: ${valorDescripcion}`
-        );
+          `Valor del input descripción ${i + 1}: ${valorDescripcion}`
+        ); */
 
-        imagesData.push({ imagen: valorImagen, descripcion: valorDescripcion });
+        switch (true) {
+          case inputImagen.files.length === 0:
+            errorImagenes = true;
+            message.classList.add(errorBoolean ? "error" : "accuracy");
+            message.textContent = `Debe seleccionar una imágen (${i})`;
+            break;
+          case !valorDescripcion:
+            errorImagenes = true;
+            errorImagenes;
+            message.classList.add(errorBoolean ? "error" : "accuracy");
+            message.textContent = `La descripción de la imagen ${
+              i + 1
+            } no puede estar vacía`;
+            break;
+          default:
+            imagesData.push({
+              imagen: valorImagen,
+              descripcion: valorDescripcion,
+            });
+        }
       });
 
       let workName = nombreObra.value;
@@ -292,17 +360,58 @@ document.addEventListener("DOMContentLoaded", () => {
       let endDate = diaFinalizacion.value;
       let workDescription = descripcionObra.value;
 
-      let data = {
-        workName,
-        location,
-        startdate,
-        endDate,
-        imagesData,
-        workDescription,
-      };
+      switch (true) {
+        case workName.trim() === "":
+          errorBoolean = true;
+          showToastify(
+            "El nombre de la obra no puede estar vacío",
+            '<i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>'
+          );
+          break;
+        case location.trim() === "":
+          errorBoolean = true;
+          message.classList.add(errorBoolean ? "error" : "accuracy");
+          message.textContent = "";
+          message.textContent = "La ubicación no puede estar vacía";
+          break;
+        case startdate.trim() === "":
+          errorBoolean = true;
+          message.classList.add(errorBoolean ? "error" : "accuracy");
+          message.textContent = "";
+          message.textContent = "La fecha de inicio no puede estar vacía";
+          break;
+        case endDate.trim() === "":
+          errorBoolean = true;
+          message.classList.add(errorBoolean ? "error" : "accuracy");
+          message.textContent = "";
+          message.textContent = "La fecha de finalización no puede estar vacía";
+          break;
+        case workDescription.trim() === "":
+          errorBoolean = true;
+          message.classList.add(errorBoolean ? "error" : "accuracy");
+          message.textContent = "";
+          message.textContent = "La descripción no puede estar vacía";
+          break;
+      }
 
-      saveWork(data)
-      // console.log(data);
+      if (!errorBoolean && !errorImagenes) {
+        data.workName = workName;
+        data.location = location;
+        data.startdate = startdate;
+        data.endDate = endDate;
+        data.imagesData = imagesData;
+        data.workDescription = workDescription;
+        console.log(data);
+        message.textContent = "Obra creada correctamente";
+        message.classList.contains("error") &&
+          message.classList.remove("error");
+        message.classList.add(errorBoolean ? "error" : "accuracy");
+        window.location.href = "dashboard.html";
+        showToastify(
+          "Obra creada correctamente",
+          '<i class="fa-solid fa-circle-check" style="color: #107b10;"></i>'
+        );
+      }
     });
   }
 });
