@@ -25,14 +25,6 @@ form {
   align-items: center;
 }
 
-.accuracy {
-  color: #0f0;
-}
-
-.error {
-  color: #f00;
-}
-
 .create-work {
   text-align: right;
 }

@@ -6,14 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
   title.textContent = "BFA - Panel de administración";
   head.appendChild(title);
 
-  const showToastify = (mensaje, avatarHTML) => {
+  const okIcon =
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
+  const errorIcon =
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
+  const showToastify = (message, avatarHTML) => {
     Toastify({
-      text: mensaje,
-      avatar: "",
+      text: message,
+      avatar: avatarHTML,
       gravity: "top",
       position: "center",
       className: "toast-notification",
-      duration: 800000,
       style: {
         background: "#ffffff",
         color: "#000000",
@@ -23,21 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         cursor: "auto",
       },
     }).showToast();
-
-    const toast = document.querySelector(".toast-notification");
-    toast.querySelector(".toastify-avatar").innerHTML = avatarHTML;
   };
 
   if (document.URL.includes("index.html")) {
-    const formContainer = document.querySelector("section.admin-login");
     const form = document.querySelector("form");
-
-    const messagesContainer = document.createElement("div");
-    messagesContainer.classList.add("messages-container");
-    formContainer.appendChild(messagesContainer);
-
-    const message = document.createElement("span");
-    messagesContainer.appendChild(message);
 
     const email = document.querySelector("input#email");
     const password = document.querySelector("input[type=password]");
@@ -65,47 +57,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let emailValue = email.value;
       let passwordValue = password.value;
-      let errorBoolean = false;
+      let error = false;
 
       let data = {};
 
       switch (true) {
         case emailValue.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "Por favor, ingresa un correo electrónico.";
+          error = true;
+          showToastify("Por favor, ingresa un correo electrónico.", errorIcon);
           break;
         case !regex.test(emailValue):
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent =
-            "Por favor, ingresa un correo electrónico válido.";
+          error = true;
+          showToastify(
+            "Por favor, ingresa un correo electrónico válido.",
+            errorIcon
+          );
           break;
         case passwordValue.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "Por favor, ingresa una contraseña.";
+          error = true;
+          showToastify("Por favor, ingrese una contraseña.", errorIcon);
           break;
         default:
           data.email = emailValue;
           data.password = passwordValue;
-          message.textContent = "";
           if (
             compararData(data) === "El email o la contraseña no son correctos"
           ) {
-            errorBoolean = true;
+            error = true;
+            showToastify(compararData(data), errorIcon);
           }
           // loginAdmin(data);
-          message.classList.contains("error") &&
-            message.classList.remove("error");
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = compararData(data);
-          if (compararData(data) === "Bienvenido de vuelta Fabian") {
-            window.location.href = "dashboard.html";
-          }
+          showToastify(compararData(data), okIcon);
+          setTimeout(() => {
+            if (compararData(data) === "Bienvenido de vuelta Fabian") {
+              window.location.href = "dashboard.html";
+            }
+          }, 2000);
       }
       emailValue = "";
       passwordValue = "";
@@ -189,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (document.URL.includes("registerWork.html")) {
     let formularioEditado = false;
+    let validacionExitosa = false;
     let contadorImagenes = 1;
 
     // Función para agregar campos de imágenes
@@ -245,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const newWorkFormContainer = document.querySelector(".new-work__container");
     const registrarNuevaObraForm = document.querySelector("form.register-work");
 
     const fechaInicio = document.querySelector(
@@ -280,12 +267,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
+    // Se le asigna varible formulario editado en true si el input 
     registrarNuevaObraForm.addEventListener("input", () => {
       formularioEditado = true;
     });
 
+    // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
     window.addEventListener("beforeunload", (e) => {
+      if (validacionExitosa) {
+        return;
+      }
+
       if (formularioEditado) {
         e.preventDefault();
         e.returnValue = "";
@@ -299,60 +291,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const diaFinalizacion = document.querySelector("input#enddate");
     const descripcionObra = document.querySelector("textarea#descriptionWork");
 
-    const messagesContainer = document.createElement("div");
-    messagesContainer.classList.add("messages-container");
-    newWorkFormContainer.appendChild(messagesContainer);
-
-    const message = document.createElement("span");
-    messagesContainer.appendChild(message);
-
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      let errorBoolean = false;
-      let errorImagenes = false;
+      let error = false;
       let data = {};
 
       const imageFields = document.querySelectorAll(".imagen-campo");
       const imagesData = [];
-
-      imageFields.forEach((contenedor, i) => {
-        // Encontrar los inputs dentro de cada contenedor
-        const inputImagen = contenedor.querySelector(`#image${i + 1}`);
-        const inputDescripcion = contenedor.querySelector(
-          `#descriptionImage${i + 1}`
-        );
-
-        // Hacer lo que necesites con los inputs, por ejemplo, acceder a sus valores
-        const valorImagen = inputImagen.value;
-        const valorDescripcion = inputDescripcion.value;
-
-        // Puedes realizar operaciones específicas con estos valores
-        /* console.log(`Valor del input imagen ${i + 1}: ${valorImagen}`);
-        console.log(
-          `Valor del input descripción ${i + 1}: ${valorDescripcion}`
-        ); */
-
-        switch (true) {
-          case inputImagen.files.length === 0:
-            errorImagenes = true;
-            message.classList.add(errorBoolean ? "error" : "accuracy");
-            message.textContent = `Debe seleccionar una imágen (${i})`;
-            break;
-          case !valorDescripcion:
-            errorImagenes = true;
-            errorImagenes;
-            message.classList.add(errorBoolean ? "error" : "accuracy");
-            message.textContent = `La descripción de la imagen ${
-              i + 1
-            } no puede estar vacía`;
-            break;
-          default:
-            imagesData.push({
-              imagen: valorImagen,
-              descripcion: valorDescripcion,
-            });
-        }
-      });
 
       let workName = nombreObra.value;
       let location = ubicacion.value;
@@ -360,41 +305,77 @@ document.addEventListener("DOMContentLoaded", () => {
       let endDate = diaFinalizacion.value;
       let workDescription = descripcionObra.value;
 
-      switch (true) {
-        case workName.trim() === "":
-          errorBoolean = true;
-          showToastify(
-            "El nombre de la obra no puede estar vacío",
-            '<i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>'
-          );
-          break;
-        case location.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "La ubicación no puede estar vacía";
-          break;
-        case startdate.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "La fecha de inicio no puede estar vacía";
-          break;
-        case endDate.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "La fecha de finalización no puede estar vacía";
-          break;
-        case workDescription.trim() === "":
-          errorBoolean = true;
-          message.classList.add(errorBoolean ? "error" : "accuracy");
-          message.textContent = "";
-          message.textContent = "La descripción no puede estar vacía";
-          break;
+      // Icono de error de font awesome: '<i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>
+      // Icono de OK de font awesome: <i class="fa-solid fa-circle-check" style="color: #107b10;"></i>'
+
+      if (workName.trim() === "") {
+        error = true;
+        showToastify("El nombre de la obra no puede estar vacío", errorIcon);
       }
 
-      if (!errorBoolean && !errorImagenes) {
+      if (!error && location.trim() === "") {
+        error = true;
+        showToastify("La ubicación no puede estar vacía", errorIcon);
+      }
+
+      if (!error && startdate.trim() === "") {
+        error = true;
+        showToastify("La fecha de inicio no puede estar vacía", errorIcon);
+      }
+
+      if (!error && endDate.trim() === "") {
+        error = true;
+        showToastify(
+          "La fecha de finalización no puede estar vacía",
+          errorIcon
+        );
+      }
+
+      imageFields.forEach((contenedor, i) => {
+        const inputImagen = contenedor.querySelector(`#image${i + 1}`);
+        const inputDescripcion = contenedor.querySelector(
+          `#descriptionImage${i + 1}`
+        );
+        const valorImagen = inputImagen.value;
+        const valorDescripcion = inputDescripcion.value;
+
+        /* console.log(`Valor del input imagen ${i + 1}: ${valorImagen}`);
+          console.log(
+            `Valor del input descripción ${i + 1}: ${valorDescripcion}`
+          ); */
+
+        if (!error && inputImagen.files.length === 0) {
+          error = true;
+          showToastify(
+            `Debe seleccionar una imágen, para el archivo de imágen: (${
+              i + 1
+            })`,
+            errorIcon
+          );
+        } else if (!error && !valorDescripcion) {
+          error = true;
+          showToastify(
+            `La descripción de la imagen ${i + 1} no puede estar vacía`,
+            errorIcon
+          );
+        } else {
+          imagesData.push({
+            imagen: valorImagen,
+            descripcion: valorDescripcion,
+          });
+        }
+      });
+
+      if (!error && workDescription.trim() === "") {
+        error = true;
+        showToastify(
+          "La descripción de la obra no puede estar vacía",
+          errorIcon
+        );
+      }
+
+      if (!error) {
+        validacionExitosa = true;
         data.workName = workName;
         data.location = location;
         data.startdate = startdate;
@@ -402,15 +383,10 @@ document.addEventListener("DOMContentLoaded", () => {
         data.imagesData = imagesData;
         data.workDescription = workDescription;
         console.log(data);
-        message.textContent = "Obra creada correctamente";
-        message.classList.contains("error") &&
-          message.classList.remove("error");
-        message.classList.add(errorBoolean ? "error" : "accuracy");
-        window.location.href = "dashboard.html";
-        showToastify(
-          "Obra creada correctamente",
-          '<i class="fa-solid fa-circle-check" style="color: #107b10;"></i>'
-        );
+        showToastify("La obra fue creada correctamente", okIcon);
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 2000);
       }
     });
   }
