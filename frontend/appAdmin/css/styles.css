@@ -25,6 +25,23 @@ form {
   align-items: center;
 }
 
+.input-with-icon {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-with-icon input {
+  padding-right: 30px;
+}
+
 .create-work {
   text-align: right;
 }

@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
   const errorIcon =
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
-  const showToastify = (message, avatarHTML) => {
+
+  const showToastify = (message, avatarHTML = "") => {
     Toastify({
       text: message,
       avatar: avatarHTML,
@@ -33,6 +34,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email = document.querySelector("input#email");
     const password = document.querySelector("input[type=password]");
+    const eyeIcon = document.querySelector("i.input-icon");
+
+    const toggleShowPassword = () => {
+      if (password.type === "password") {
+        password.type = "text";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+      } else {
+        password.type = "password";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+      }
+    };
+
+    eyeIcon.addEventListener("click", toggleShowPassword);
 
     const compararData = (data) => {
       let correctData = {
@@ -87,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showToastify(compararData(data), errorIcon);
           }
           // loginAdmin(data);
-          showToastify(compararData(data), okIcon);
+          showToastify(compararData(data));
           setTimeout(() => {
             if (compararData(data) === "Bienvenido de vuelta Fabian") {
               window.location.href = "dashboard.html";
@@ -177,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.URL.includes("registerWork.html")) {
     let formularioEditado = false;
     let validacionExitosa = false;
+    let masDeCincuentaCaracteres = false;
     let contadorImagenes = 1;
 
     // Función para agregar campos de imágenes
@@ -227,9 +244,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (longitudActual > 50) {
         input.style.borderColor = "#ff0000";
         contadorCaracteres.style.color = "#ff0000";
+        masDeCincuentaCaracteres = true;
       } else {
         input.style.borderColor = "#000000";
         contadorCaracteres.style.color = "#000000";
+        masDeCincuentaCaracteres = false;
       }
     }
 
@@ -238,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fechaInicio = document.querySelector(
       "input[type='date'][name='startdate']"
     );
+
     const fechaFin = document.querySelector(
       "input[type='date'][name='enddate']"
     );
@@ -248,26 +268,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const fechaFinValue = new Date(fechaFin.value);
 
       if (fechaInicioValue >= fechaFinValue) {
-        alert(
-          "La fecha de inicio no puede ser mayor o igual que la fecha de finalización."
+        showToastify(
+          "La fecha de finalización no puede ser menor o igual que la fecha de inicio.",
+          errorIcon
         );
         fechaFin.value = "";
       }
     });
 
+    // Lo hago también para le fecha de finalización por si el usuario ingresa primero la de finalización.
     fechaInicio.addEventListener("change", () => {
       const fechaInicioValue = new Date(fechaInicio.value);
       const fechaFinValue = new Date(fechaFin.value);
 
       if (fechaInicioValue >= fechaFinValue) {
-        alert(
-          "La fecha de inicio no puede ser mayor o igual que la fecha de finalización."
+        showToastify(
+          "La fecha de finalización no puede ser menor o igual que la fecha de inicio.",
+          errorIcon
         );
         fechaFin.value = "";
       }
     });
 
-    // Se le asigna varible formulario editado en true si el input 
+    // Se le asigna varible formulario editado en true si el input
     registrarNuevaObraForm.addEventListener("input", () => {
       formularioEditado = true;
     });
@@ -285,11 +308,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Encuentra imágenes duplicadas. En caso de encontrar devuelve true sino false
+    const isImageDuplicate = (selectedImageName, imagesData) => {
+      return imagesData.some(
+        (imageData) => imageData.imagen === selectedImageName
+      );
+    };
+
     const nombreObra = document.querySelector("input#title");
     const ubicacion = document.querySelector("input#location");
     const diaInicio = document.querySelector("input#startdate");
     const diaFinalizacion = document.querySelector("input#enddate");
     const descripcionObra = document.querySelector("textarea#descriptionWork");
+
+    const regex = /^[A-Za-z\s]+,\s[A-Za-z\s]+$/;
 
     registrarNuevaObraForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -318,6 +350,14 @@ document.addEventListener("DOMContentLoaded", () => {
         showToastify("La ubicación no puede estar vacía", errorIcon);
       }
 
+      if (!error && !regex.test(location)) {
+        error = true;
+        showToastify(
+          "El formato de la ubicación es inválido. Debe ser 'Ciudad, País'.",
+          errorIcon
+        );
+      }
+
       if (!error && startdate.trim() === "") {
         error = true;
         showToastify("La fecha de inicio no puede estar vacía", errorIcon);
@@ -336,33 +376,60 @@ document.addEventListener("DOMContentLoaded", () => {
         const inputDescripcion = contenedor.querySelector(
           `#descriptionImage${i + 1}`
         );
-        const valorImagen = inputImagen.value;
-        const valorDescripcion = inputDescripcion.value;
+        const selectedImage = inputImagen.files ? inputImagen.files[0] : null;
 
-        /* console.log(`Valor del input imagen ${i + 1}: ${valorImagen}`);
-          console.log(
-            `Valor del input descripción ${i + 1}: ${valorDescripcion}`
-          ); */
-
-        if (!error && inputImagen.files.length === 0) {
+        if (!error && !selectedImage) {
           error = true;
           showToastify(
-            `Debe seleccionar una imágen, para el archivo de imágen: (${
+            `Debe seleccionar una imágen, para el archivo de la imágen: ${
               i + 1
-            })`,
-            errorIcon
-          );
-        } else if (!error && !valorDescripcion) {
-          error = true;
-          showToastify(
-            `La descripción de la imagen ${i + 1} no puede estar vacía`,
+            }`,
             errorIcon
           );
         } else {
-          imagesData.push({
-            imagen: valorImagen,
-            descripcion: valorDescripcion,
-          });
+          const selectedImageName = selectedImage ? selectedImage.name : null;
+          const valorDescripcion = inputDescripcion
+            ? inputDescripcion.value
+            : null;
+
+          if (!error && selectedImageName.trim() === "") {
+            error = true;
+            showToastify(
+              `Debe seleccionar una imágen, para el archivo de la imágen: ${
+                i + 1
+              }`,
+              errorIcon
+            );
+          } else if (!error && !valorDescripcion) {
+            error = true;
+            showToastify(
+              `La descripción de la imagen ${i + 1} no puede estar vacía`,
+              errorIcon
+            );
+          } else if (!error && masDeCincuentaCaracteres) {
+            error = true;
+            showToastify(
+              `La descripción de la imagen ${
+                i + 1
+              } no puede tener más de cincuenta caracteres`
+            );
+          } else if (
+            !error &&
+            isImageDuplicate(selectedImageName, imagesData)
+          ) {
+            error = true;
+            showToastify(
+              `La imagen seleccionada en el campo ${
+                i + 1
+              } ya ha sido agregada en otro campo`,
+              errorIcon
+            );
+          } else {
+            imagesData.push({
+              imagen: selectedImageName,
+              descripcion: valorDescripcion,
+            });
+          }
         }
       });
 
@@ -384,9 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
         data.workDescription = workDescription;
         console.log(data);
         showToastify("La obra fue creada correctamente", okIcon);
-        setTimeout(() => {
+
+        /* setTimeout(() => {
           window.location.href = "dashboard.html";
-        }, 2000);
+        }, 2000); */
       }
     });
   }
