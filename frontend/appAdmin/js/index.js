@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       switch (true) {
         case correctData.email === data.email &&
           correctData.password === data.password:
-          return "Bienvenido de vuelta Fabian";
+          return "Bienvenido Fabian";
         default:
           return "El email o la contraseña no son correctos";
       }
@@ -103,12 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
             showToastify(compararData(data), errorIcon);
           }
           // loginAdmin(data);
-          showToastify(compararData(data));
-          setTimeout(() => {
-            if (compararData(data) === "Bienvenido de vuelta Fabian") {
-              window.location.href = "dashboard.html";
-            }
-          }, 2000);
+          if (compararData(data) === "Bienvenido Fabian") {
+            window.location.href = "dashboard.html";
+          }
       }
       emailValue = "";
       passwordValue = "";
@@ -121,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createNewWork.setAttribute("href", "./registerWork.html");
     createNewWork.classList.add("create-work");
     createNewWork.textContent = "Nueva Obra";
+    showToastify("Bienvenido Fabian");
 
     let lengthProjects = 0;
     let labels = ["ID", "Título", "Editar", "Eliminar"];
@@ -411,7 +409,8 @@ document.addEventListener("DOMContentLoaded", () => {
             showToastify(
               `La descripción de la imagen ${
                 i + 1
-              } no puede tener más de cincuenta caracteres`
+              } no puede tener más de 50 caracteres`,
+              errorIcon
             );
           } else if (
             !error &&
@@ -441,7 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
 
-      if (!error) {
+      if (!error && !masDeCincuentaCaracteres) {
         validacionExitosa = true;
         data.workName = workName;
         data.location = location;
@@ -451,10 +450,9 @@ document.addEventListener("DOMContentLoaded", () => {
         data.workDescription = workDescription;
         console.log(data);
         showToastify("La obra fue creada correctamente", okIcon);
-
-        /* setTimeout(() => {
+        setTimeout(() => {
           window.location.href = "dashboard.html";
-        }, 2000); */
+        }, 2000);
       }
     });
   }
