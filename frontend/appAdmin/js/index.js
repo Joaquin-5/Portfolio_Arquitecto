@@ -118,7 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
     createNewWork.setAttribute("href", "./registerWork.html");
     createNewWork.classList.add("create-work");
     createNewWork.textContent = "Nueva Obra";
-    showToastify("Bienvenido Fabian");
+
+    // Verifica si es la primera visita a la página dashboard.html
+    const isFirstVisit = sessionStorage.getItem("dashboardFirstVisit");
+    if (!isFirstVisit) {
+      showToastify("Bienvenido Fabian");
+      sessionStorage.setItem("dashboardFirstVisit", "true");
+    }
 
     let lengthProjects = 0;
     let labels = ["ID", "Título", "Editar", "Eliminar"];
@@ -191,8 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.URL.includes("registerWork.html")) {
     let formularioEditado = false;
     let validacionExitosa = false;
-    let masDeCincuentaCaracteres = false;
     let contadorImagenes = 1;
+    const camposValidacion = [];
 
     // Función para agregar campos de imágenes
     function agregarCampoImagen() {
@@ -201,15 +207,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const nuevoCampo = document.createElement("div");
       nuevoCampo.classList.add("imagen-campo");
       nuevoCampo.innerHTML = `
-        <label for="image${contadorImagenes}">Imagen:</label>
+        <label for="image${contadorImagenes}">Imagen ${contadorImagenes}:</label>
         <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
-        <label for="descriptionImage${contadorImagenes}">Descripción de la imágen (máx. 50 caracteres):</label>
+        <label for="descriptionImage${contadorImagenes}">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
         <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
         <span class="contadorCaracteres">0 / 50</span>
         <button type="button" class="eliminarCampo">Eliminar</button>
     `;
       const eliminarBoton = nuevoCampo.querySelector(".eliminarCampo");
       eliminarBoton.addEventListener("click", () => {
+        contadorImagenes--;
         document.getElementById("camposImagenes").removeChild(nuevoCampo);
       });
 
@@ -220,8 +227,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const nuevoContador = nuevoCampo.querySelector(".contadorCaracteres");
 
       nuevoInput.addEventListener("input", () => {
-        actualizarContador(nuevoInput, nuevoContador);
+        actualizarContador(nuevoInput, nuevoContador, nuevoCampo);
       });
+
+      camposValidacion.push(nuevoCampo);
     }
 
     document
@@ -235,18 +244,24 @@ document.addEventListener("DOMContentLoaded", () => {
       actualizarContador(descripcionInput, contadorCaracteres);
     });
 
-    function actualizarContador(input, contadorCaracteres) {
+    function actualizarContador(input, contadorCaracteres, campo = null) {
       const longitudActual = input.value.length;
       contadorCaracteres.textContent = `${longitudActual} / 50`;
 
       if (longitudActual > 50) {
         input.style.borderColor = "#ff0000";
         contadorCaracteres.style.color = "#ff0000";
-        masDeCincuentaCaracteres = true;
+
+        if (campo) {
+          campo.classList.add("invalid");
+        }
       } else {
         input.style.borderColor = "#000000";
         contadorCaracteres.style.color = "#000000";
-        masDeCincuentaCaracteres = false;
+
+        if (campo) {
+          campo.classList.remove("invalid");
+        }
       }
     }
 
@@ -404,7 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
               `La descripción de la imagen ${i + 1} no puede estar vacía`,
               errorIcon
             );
-          } else if (!error && masDeCincuentaCaracteres) {
+          } else if (!error && inputDescripcion.value.length > 50) {
             error = true;
             showToastify(
               `La descripción de la imagen ${
@@ -412,6 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
               } no puede tener más de 50 caracteres`,
               errorIcon
             );
+            contenedor.classList.add("invalid");
           } else if (
             !error &&
             isImageDuplicate(selectedImageName, imagesData)
@@ -432,6 +448,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      const imageFieldsArray = Array.from(imageFields).filter(
+        (contenedor) => contenedor !== null && typeof contenedor !== "undefined"
+      );
+
+      if (
+        imageFieldsArray.some((contenedor) =>
+          contenedor.classList.contains("invalid")
+        )
+      ) {
+        validacionExitosa = false;
+      }
+
       if (!error && workDescription.trim() === "") {
         error = true;
         showToastify(
@@ -440,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
 
-      if (!error && !masDeCincuentaCaracteres) {
+      if (!error) {
         validacionExitosa = true;
         data.workName = workName;
         data.location = location;
