@@ -198,7 +198,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let formularioEditado = false;
     let validacionExitosa = false;
     let contadorImagenes = 1;
-    const camposValidacion = [];
+    let camposValidacion = [];
+
+    function actualizarNumerosCampos() {
+      const campos = document.querySelectorAll(".imagen-campo");
+      campos.forEach((campo, index) => {
+        const numeroCampo = index + 1;
+        campo.querySelector("label").textContent = `Imagen ${numeroCampo}:`;
+      });
+    }
 
     // Función para agregar campos de imágenes
     function agregarCampoImagen() {
@@ -206,18 +214,20 @@ document.addEventListener("DOMContentLoaded", () => {
       formularioEditado = true;
       const nuevoCampo = document.createElement("div");
       nuevoCampo.classList.add("imagen-campo");
+      nuevoCampo.classList.add(`imagen-campo-${contadorImagenes}`);
       nuevoCampo.innerHTML = `
-        <label for="image${contadorImagenes}">Imagen ${contadorImagenes}:</label>
-        <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
-        <label for="descriptionImage${contadorImagenes}">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
-        <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
-        <span class="contadorCaracteres">0 / 50</span>
-        <button type="button" class="eliminarCampo">Eliminar</button>
+      <label for="image${contadorImagenes}">Imagen ${contadorImagenes}:</label>
+      <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
+      <label for="descriptionImage${contadorImagenes}">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
+      <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
+      <span class="contadorCaracteres">0 / 50</span>
+      <button type="button" class="eliminarCampo">Eliminar</button>
     `;
       const eliminarBoton = nuevoCampo.querySelector(".eliminarCampo");
       eliminarBoton.addEventListener("click", () => {
-        contadorImagenes--;
+        formularioEditado = true;
         document.getElementById("camposImagenes").removeChild(nuevoCampo);
+        actualizarNumerosCampos();
       });
 
       document.getElementById("camposImagenes").appendChild(nuevoCampo);
@@ -245,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function actualizarContador(input, contadorCaracteres, campo = null) {
+      const numeroCampo = input.id.replace(/\D/g, "");
       const longitudActual = input.value.length;
       contadorCaracteres.textContent = `${longitudActual} / 50`;
 
@@ -263,6 +274,18 @@ document.addEventListener("DOMContentLoaded", () => {
           campo.classList.remove("invalid");
         }
       }
+
+      // Actualiza los nombres de los campos
+      camposValidacion.forEach((campo) => {
+        const inputImagen = campo.querySelector(`#image${numeroCampo}`);
+        const inputDescripcion = campo.querySelector(
+          `#descriptionImage${numeroCampo}`
+        );
+        if (inputImagen && inputDescripcion) {
+          inputImagen.name = `image${numeroCampo}`;
+          inputDescripcion.name = `descriptionImage${numeroCampo}`;
+        }
+      });
     }
 
     const registrarNuevaObraForm = document.querySelector("form.register-work");
