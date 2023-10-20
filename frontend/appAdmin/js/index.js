@@ -184,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector("#camposImagenes").childElementCount;
     let camposValidacion = [];
 
+    // Selecciona todos los campos y con la cantidad de los divs hijos imagen-campo actualiza todos 
     const actualizarNumerosCampos = (cantidad) => {
       // Todos los campos del input type file con su respesctivo label
       const labelsImageFile = document.querySelectorAll(".image-file__label");
@@ -258,7 +259,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("camposImagenes").removeChild(nuevoCampo);
         contadorImagenes =
           document.querySelector("#camposImagenes").childElementCount;
-        console.log(contadorImagenes);
         actualizarNumerosCampos(contadorImagenes);
       });
 
