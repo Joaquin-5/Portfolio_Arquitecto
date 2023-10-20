@@ -1,33 +1,16 @@
 // import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
+import { showToastify } from "../../common/js/toastify.js";
+
+const okIcon =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
+const errorIcon =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
 
 document.addEventListener("DOMContentLoaded", () => {
   const head = document.querySelector("head");
   const title = document.createElement("title");
   title.textContent = "BFA - Panel de administración";
   head.appendChild(title);
-
-  const okIcon =
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
-  const errorIcon =
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
-
-  const showToastify = (message, avatarHTML = "") => {
-    Toastify({
-      text: message,
-      avatar: avatarHTML,
-      gravity: "top",
-      position: "center",
-      className: "toast-notification",
-      style: {
-        background: "#ffffff",
-        color: "#000000",
-        display: "flex",
-        alignItems: "center",
-        gap: "1rem",
-        cursor: "auto",
-      },
-    }).showToast();
-  };
 
   if (document.URL.includes("index.html")) {
     const form = document.querySelector("form");
@@ -197,40 +180,92 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.URL.includes("registerWork.html")) {
     let formularioEditado = false;
     let validacionExitosa = false;
-    let contadorImagenes = 1;
+    let contadorImagenes =
+      document.querySelector("#camposImagenes").childElementCount;
     let camposValidacion = [];
 
-    function actualizarNumerosCampos() {
-      const campos = document.querySelectorAll(".imagen-campo");
-      campos.forEach((campo, index) => {
-        const numeroCampo = index + 1;
-        campo.querySelector("label").textContent = `Imagen ${numeroCampo}:`;
-      });
-    }
+    const actualizarNumerosCampos = (cantidad) => {
+      // Todos los campos del input type file con su respesctivo label
+      const labelsImageFile = document.querySelectorAll(".image-file__label");
+      const inputsImageFile = document.querySelectorAll(".image_file__input");
 
-    // Función para agregar campos de imágenes
-    function agregarCampoImagen() {
-      contadorImagenes++;
+      // Todos los campos del input para la descripción de la imagen
+      const labelsImageDescription = document.querySelectorAll(
+        ".image-description__label"
+      );
+      const inputsImageDescription = document.querySelectorAll(
+        ".image-description__input"
+      );
+
+      for (let i = 0; i < cantidad; i++) {
+        if (labelsImageFile[i]) {
+          labelsImageFile[i].setAttribute("for", `image${i + 1}`);
+          labelsImageFile[i].textContent = `Imagen ${i + 1}`;
+        }
+
+        if (inputsImageFile[i]) {
+          inputsImageFile[i].setAttribute("id", `image${i + 1}`);
+          inputsImageFile[i].setAttribute("name", `image${i + 1}`);
+        }
+
+        if (labelsImageDescription[i]) {
+          labelsImageDescription[i].setAttribute(
+            "for",
+            `descriptionImage${i + 1}`
+          );
+          labelsImageDescription[i].textContent = `Descripción de la imágen ${
+            i + 1
+          } (máx. 50 caracteres):`;
+        }
+
+        if (inputsImageDescription[i]) {
+          inputsImageDescription[i].setAttribute(
+            "id",
+            `descriptionImage${i + 1}`
+          );
+          inputsImageDescription[i].setAttribute(
+            "name",
+            `descriptionImage${i + 1}`
+          );
+        }
+      }
+    };
+
+    // Función para agregar el campo de imagen
+    const agregarCampoImagen = () => {
       formularioEditado = true;
+      contadorImagenes = contadorImagenes + 1;
       const nuevoCampo = document.createElement("div");
       nuevoCampo.classList.add("imagen-campo");
-      nuevoCampo.classList.add(`imagen-campo-${contadorImagenes}`);
-      nuevoCampo.innerHTML = `
-      <label for="image${contadorImagenes}">Imagen ${contadorImagenes}:</label>
-      <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
-      <label for="descriptionImage${contadorImagenes}">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
-      <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
-      <span class="contadorCaracteres">0 / 50</span>
-      <button type="button" class="eliminarCampo">Eliminar</button>
-    `;
+      const numeroCampo = camposValidacion.length + 1;
+      nuevoCampo.classList.add(`imagen-campo-${numeroCampo}`);
+      nuevoCampo.insertAdjacentHTML(
+        "beforeend",
+        `
+        <label for="image${contadorImagenes}" class="image-file__label">Imagen ${contadorImagenes}:</label>
+        <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
+        <label for="descriptionImage${contadorImagenes}" class="image-description__label">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
+        <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
+        <span class="contadorCaracteres">0 / 50</span>
+        <button type="button" class="eliminarCampo">Eliminar</button>
+      `
+      );
+
+      // Agregar el evento de eliminar al botón
       const eliminarBoton = nuevoCampo.querySelector(".eliminarCampo");
       eliminarBoton.addEventListener("click", () => {
         formularioEditado = true;
         document.getElementById("camposImagenes").removeChild(nuevoCampo);
-        actualizarNumerosCampos();
+        contadorImagenes =
+          document.querySelector("#camposImagenes").childElementCount;
+        console.log(contadorImagenes);
+        actualizarNumerosCampos(contadorImagenes);
       });
 
+      // Agregar el nuevo campo al formulario
       document.getElementById("camposImagenes").appendChild(nuevoCampo);
+
+      // Agregar evento de conteo de caracteres a la descripción
       const nuevoInput = nuevoCampo.querySelector(
         `#descriptionImage${contadorImagenes}`
       );
@@ -239,9 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nuevoInput.addEventListener("input", () => {
         actualizarContador(nuevoInput, nuevoContador, nuevoCampo);
       });
-
-      camposValidacion.push(nuevoCampo);
-    }
+    };
 
     document
       .getElementById("agregarImagen")
@@ -254,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
       actualizarContador(descripcionInput, contadorCaracteres);
     });
 
-    function actualizarContador(input, contadorCaracteres, campo = null) {
+    const actualizarContador = (input, contadorCaracteres, campo = null) => {
       const numeroCampo = input.id.replace(/\D/g, "");
       const longitudActual = input.value.length;
       contadorCaracteres.textContent = `${longitudActual} / 50`;
@@ -286,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
           inputDescripcion.name = `descriptionImage${numeroCampo}`;
         }
       });
-    }
+    };
 
     const registrarNuevaObraForm = document.querySelector("form.register-work");
 
@@ -312,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Lo hago también para le fecha de finalización por si el usuario ingresa primero la de finalización.
+    // Lo hago también para le fecha de finalización por si el usuario ingresa primero la de finalización. Aunque no se el flujo del programa
     fechaInicio.addEventListener("change", () => {
       const fechaInicioValue = new Date(fechaInicio.value);
       const fechaFinValue = new Date(fechaFin.value);
