@@ -90,8 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "dashboard.html";
           }
       }
-      emailValue = "";
-      passwordValue = "";
+      form.reset();
+      /* emailValue = "";
+      passwordValue = ""; */
     });
   }
 
@@ -184,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector("#camposImagenes").childElementCount;
     let camposValidacion = [];
 
-    // Selecciona todos los campos y con la cantidad de los divs hijos imagen-campo actualiza todos 
+    // Selecciona todos los campos y con la cantidad de los divs hijos imagen-campo actualiza todos
     const actualizarNumerosCampos = (cantidad) => {
       // Todos los campos del input type file con su respesctivo label
       const labelsImageFile = document.querySelectorAll(".image-file__label");
@@ -244,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "beforeend",
         `
         <label for="image${contadorImagenes}" class="image-file__label">Imagen ${contadorImagenes}:</label>
-        <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*"/>
+        <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" acce-pt="image/*"/>
         <label for="descriptionImage${contadorImagenes}" class="image-description__label">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
         <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
         <span class="contadorCaracteres">0 / 50</span>
@@ -533,6 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
         data.imagesData = imagesData;
         data.workDescription = workDescription;
         console.log(data);
+        registrarNuevaObraForm.reset();
         showToastify("La obra fue creada correctamente", okIcon);
         setTimeout(() => {
           window.location.href = "dashboard.html";

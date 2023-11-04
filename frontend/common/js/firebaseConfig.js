@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
 import {
   getFirestore,
@@ -7,7 +6,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
+import {
+  getAuth,
+  connectAuthEmulator,
+  signInWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCulGHCiKhTSdL3L7IVi1q7DdP42rf-upA",
@@ -23,10 +26,28 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore();
 
-export const loginAdmin = (data) => {
-  console.log(data);
+/* const auth = getAuth();
+connectAuthEmulator(auth, "http://127.0.0.1:5500/frontend/appAdmin/index.html");
+
+export const loginAdmin = async (data) => {
+  const email = data.email;
+  const password = data.password;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const userData = userCredential.user;
+    console.log(userData);
+    return 1;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
 };
 
 export const saveWork = (data) => {
   addDoc(collection(db, "works"), data);
-};
+}; */
