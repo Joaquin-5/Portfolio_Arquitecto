@@ -1,4 +1,4 @@
-// import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
+import { loginAdmin, saveWork } from "../../common/js/firebaseConfig.js";
 import { showToastify } from "../../common/js/toastify.js";
 
 const okIcon =
@@ -79,16 +79,16 @@ document.addEventListener("DOMContentLoaded", () => {
         default:
           data.email = emailValue;
           data.password = passwordValue;
-          if (
+          /* if (
             compararData(data) === "El email o la contraseña no son correctos"
           ) {
             error = true;
             showToastify(compararData(data), errorIcon);
-          }
-          // loginAdmin(data);
-          if (compararData(data) === "Bienvenido Fabian") {
+          } */
+          loginAdmin(data);
+          /* if (compararData(data) === "Bienvenido Fabian") {
             window.location.href = "dashboard.html";
-          }
+          } */
       }
       form.reset();
       /* emailValue = "";
