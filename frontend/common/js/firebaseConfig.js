@@ -10,8 +10,15 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
-import { showToastify } from "./toastify.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-storage.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -25,26 +32,51 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore();
+
 const auth = getAuth();
 
+const storage = getStorage(app);
+
 export const loginAdmin = (data) => {
-  console.log(data);
-  const email = data.email;
-  const password = data.password;
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(user);
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-    });
+  const { email, password } = data;
+
+  return new Promise((resolve, reject) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        resolve(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+        reject(errorMessage);
+      });
+  });
+};
+
+export const logoutAdmin = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const saveWork = (data) => {
   addDoc(collection(db, "works"), data);
+};
+
+export const uploadFile = async (file) => {
+  const storageRef = ref(storage, "imagenes-trabajos/" + file.name);
+
+  await uploadBytes(storageRef, file);
+
+  const imageUrl = await getDownloadURL(storageRef);
+
+  return imageUrl;
 };

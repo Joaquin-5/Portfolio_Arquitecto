@@ -5,6 +5,7 @@ export const showToastify = (message, avatarHTML = "") => {
     gravity: "top",
     position: "center",
     className: "toast-notification",
+    duration: 3000,
     style: {
       background: "#ffffff",
       color: "#000000",

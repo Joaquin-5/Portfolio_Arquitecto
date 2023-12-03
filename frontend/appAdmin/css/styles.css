@@ -17,6 +17,10 @@ h1 {
   text-align: center;
 }
 
+.close-session {
+  cursor: pointer;
+}
+
 form {
   width: 300px;
   display: flex;
