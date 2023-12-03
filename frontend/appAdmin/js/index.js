@@ -470,8 +470,6 @@ document.addEventListener("DOMContentLoaded", () => {
               ? inputImagen.files[0]
               : null;
 
-            console.log(selectedImage);
-
             if (!error && !selectedImage) {
               error = true;
               showToastify(
@@ -564,10 +562,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Subir todas las imágenes y obtener las URLs
             const imagenesPromesas = imagesData.map(async (imagenData) => {
-              const imageUrl = await uploadFile(imagenData.imagen);
+              const imageUrl = await uploadFile(imagenData.image);
               return {
                 image: imageUrl,
-                descriptionImage: imagenData.descripcion,
+                descriptionImage: imagenData.descriptionImage,
               };
             });
 
@@ -579,14 +577,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Llamada a saveWork y redirección después de que se complete
             saveWork(data)
-              .catch((error) => {
-                console.error("Error al guardar la obra:", error);
-              })
-              .finally(() => {
+              .then(() => {
                 showToastify("La obra fue creada correctamente", okIcon);
                 setTimeout(() => {
                   window.location.href = "dashboard.html";
                 }, 2000);
+              })
+              .catch((error) => {
+                console.error("Error al guardar la obra:", error);
+                showToastify("Hubo un error al guardar la obra.", errorIcon);
               });
           }
         });

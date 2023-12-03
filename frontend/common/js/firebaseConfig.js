@@ -67,11 +67,23 @@ export const logoutAdmin = async () => {
   }
 };
 
-export const saveWork = (data) => {
-  addDoc(collection(db, "works"), data);
+export const saveWork = async (data) => {
+  try {
+    const docRef = await addDoc(collection(db, "works"), data);
+    return docRef; // Devuelve el documento creado
+  } catch (error) {
+    console.error("Error al guardar la obra:", error);
+    throw error; // Relanza el error para que pueda ser manejado en el código que llama a saveWork
+  }
 };
 
 export const uploadFile = async (file) => {
+  // Verificar que 'file' no sea null ni undefined
+  if (!file) {
+    console.error("El archivo es nulo o indefinido.");
+    return null; // O devuelve lo que sea apropiado en tu caso
+  }
+
   const storageRef = ref(storage, "imagenes-trabajos/" + file.name);
 
   await uploadBytes(storageRef, file);
