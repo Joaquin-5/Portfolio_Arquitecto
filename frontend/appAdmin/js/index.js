@@ -92,6 +92,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      // El usuario está autenticado
+      if (document.URL.includes("index.html")) {
+        // Redirige al usuario a dashboard.html
+        window.location.href = "dashboard.html";
+      }
+
       if (document.URL.includes("dashboard.html")) {
         const body = document.querySelector("body");
         const buttonCloseSession = document.querySelector(".close-session");
