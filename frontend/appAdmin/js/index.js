@@ -2,6 +2,7 @@ import {
   loginAdmin,
   logoutAdmin,
   saveWork,
+  getWorks,
   uploadFile,
 } from "../../common/js/firebaseConfig.js";
 import { showToastify } from "../../common/js/toastify.js";
@@ -90,15 +91,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // El usuario está autenticado
+      // Si el administrador está autenticado
       if (document.URL.includes("index.html")) {
-        // Redirige al usuario a dashboard.html
+        // Redirige al administrador a dashboard.html
         window.location.href = "dashboard.html";
       }
 
       if (document.URL.includes("dashboard.html")) {
+        // Obteniendo obras de la base de datos
+        // const querySnapshot = await getWorks();
+
         const body = document.querySelector("body");
         const buttonCloseSession = document.querySelector(".close-session");
         const createNewWork = document.createElement("a");
@@ -140,9 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           for (let i = 0; i < lengthProjects; i++) {
-            const nuevaFila = document.createElement("tr");
+            const newRow = document.createElement("tr");
 
-            nuevaFila.innerHTML = `
+            newRow.innerHTML = `
             <td class="id-work">${i + 1}</td>
             <td>Alfreds Futterkiste</td>
             <td>
@@ -154,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="#" class="delete-work"><i class="fa-solid fa-trash"></i></a>
             </td>
            `;
-            table.appendChild(nuevaFila);
+            table.appendChild(newRow);
           }
           myWorks.appendChild(table);
           body.appendChild(myWorks);
@@ -188,9 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (document.URL.includes("registerWork.html")) {
-        let formularioEditado = false;
-        let validacionExitosa = false;
-        let contadorImagenes =
+        let editedForm = false;
+        let successfulValidation = false;
+        let counterImages =
           document.querySelector("#camposImagenes").childElementCount;
         let camposValidacion = [];
 
@@ -248,45 +252,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para agregar el campo de imagen
         const agregarCampoImagen = () => {
-          formularioEditado = true;
-          contadorImagenes = contadorImagenes + 1;
-          const nuevoCampo = document.createElement("div");
-          nuevoCampo.classList.add("imagen-campo");
-          const numeroCampo = camposValidacion.length + 1;
-          nuevoCampo.classList.add(`imagen-campo-${numeroCampo}`);
-          nuevoCampo.insertAdjacentHTML(
+          editedForm = true;
+
+          counterImages = counterImages + 1;
+          const newField = document.createElement("div");
+
+          newField.classList.add("imagen-campo");
+          const numberField = camposValidacion.length + 1;
+
+          newField.classList.add(`imagen-campo-${numberField}`);
+
+          newField.insertAdjacentHTML(
             "beforeend",
             `
-            <label for="image${contadorImagenes}" class="image-file__label">Imagen ${contadorImagenes}:</label>
-            <input type="file" id="image${contadorImagenes}" name="image${contadorImagenes}" accept="image/*" class="image_file__input"/>
-            <label for="descriptionImage${contadorImagenes}" class="image-description__label">Descripción de la imágen ${contadorImagenes} (máx. 50 caracteres):</label>
-            <input type="text" id="descriptionImage${contadorImagenes}" name="descriptionImage${contadorImagenes}" placeholder="Descripcion de la imágen"/>
+            <label for="image${counterImages}" class="image-file__label">Imagen ${counterImages}:</label>
+            <input type="file" id="image${counterImages}" name="image${counterImages}" accept="image/*" class="image_file__input"/>
+            <label for="descriptionImage${counterImages}" class="image-description__label">Descripción de la imágen ${counterImages} (máx. 50 caracteres):</label>
+            <input type="text" id="descriptionImage${counterImages}" name="descriptionImage${counterImages}" placeholder="Descripcion de la imágen"/>
             <span class="contadorCaracteres">0 / 50</span>
             <button type="button" class="eliminarCampo">Eliminar</button>
           `
           );
 
           // Agregar el evento de eliminar al botón
-          const eliminarBoton = nuevoCampo.querySelector(".eliminarCampo");
+          const eliminarBoton = newField.querySelector(".eliminarCampo");
           eliminarBoton.addEventListener("click", () => {
-            formularioEditado = true;
-            document.getElementById("camposImagenes").removeChild(nuevoCampo);
-            contadorImagenes =
+            editedForm = true;
+            document.getElementById("camposImagenes").removeChild(newField);
+
+            counterImages =
               document.querySelector("#camposImagenes").childElementCount;
-            actualizarNumerosCampos(contadorImagenes);
+            actualizarNumerosCampos(counterImages);
           });
 
           // Agregar el nuevo campo al formulario
-          document.getElementById("camposImagenes").appendChild(nuevoCampo);
+          document.getElementById("camposImagenes").appendChild(newField);
 
           // Agregar evento de conteo de caracteres a la descripción
-          const nuevoInput = nuevoCampo.querySelector(
-            `#descriptionImage${contadorImagenes}`
+          const nuevoInput = newField.querySelector(
+            `#descriptionImage${counterImages}`
           );
-          const nuevoContador = nuevoCampo.querySelector(".contadorCaracteres");
+          const nuevoContador = newField.querySelector(".contadorCaracteres");
 
           nuevoInput.addEventListener("input", () => {
-            actualizarContador(nuevoInput, nuevoContador, nuevoCampo);
+            actualizarContador(nuevoInput, nuevoContador, newField);
           });
         };
 
@@ -294,13 +303,13 @@ document.addEventListener("DOMContentLoaded", () => {
           .getElementById("agregarImagen")
           .addEventListener("click", agregarCampoImagen);
 
-        const descripcionInput = document.getElementById("descriptionImage1");
+        const descriptionInput = document.getElementById("descriptionImage1");
         const contadorCaracteres = document.querySelector(
           ".contadorCaracteres"
         );
 
-        descripcionInput.addEventListener("input", () => {
-          actualizarContador(descripcionInput, contadorCaracteres);
+        descriptionInput.addEventListener("input", () => {
+          actualizarContador(descriptionInput, contadorCaracteres);
         });
 
         const actualizarContador = (
@@ -308,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
           contadorCaracteres,
           campo = null
         ) => {
-          const numeroCampo = input.id.replace(/\D/g, "");
+          const numberField = input.id.replace(/\D/g, "");
           const longitudActual = input.value.length;
           contadorCaracteres.textContent = `${longitudActual} / 50`;
 
@@ -330,18 +339,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Actualiza los nombres de los campos
           camposValidacion.forEach((campo) => {
-            const inputImagen = campo.querySelector(`#image${numeroCampo}`);
+            const imageInput = campo.querySelector(`#image${numberField}`);
             const inputDescripcion = campo.querySelector(
-              `#descriptionImage${numeroCampo}`
+              `#descriptionImage${numberField}`
             );
-            if (inputImagen && inputDescripcion) {
-              inputImagen.name = `image${numeroCampo}`;
-              inputDescripcion.name = `descriptionImage${numeroCampo}`;
+            if (imageInput && inputDescripcion) {
+              imageInput.name = `image${numberField}`;
+              inputDescripcion.name = `descriptionImage${numberField}`;
             }
           });
         };
 
-        const registrarNuevaObraForm =
+        const registerNewWorkForm =
           document.querySelector("form.register-work");
 
         const fechaInicio = document.querySelector(
@@ -381,17 +390,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Se le asigna varible formulario editado en true si el input
-        registrarNuevaObraForm.addEventListener("input", () => {
-          formularioEditado = true;
+        registerNewWorkForm.addEventListener("input", () => {
+          editedForm = true;
         });
 
         // Mostrar mensaje de alerta ante el actualizado o cerrado de la página para no perder la información del formulario
         window.addEventListener("beforeunload", (e) => {
-          if (validacionExitosa) {
+          if (successfulValidation) {
             return;
           }
 
-          if (formularioEditado) {
+          if (editedForm) {
             e.preventDefault();
             e.returnValue = "";
             return "¡Atención! Hay cambios no guardados en el formulario.";
@@ -415,10 +424,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const regex = /^[A-Za-z\s]+,\s[A-Za-z\s]+$/;
 
-        registrarNuevaObraForm.addEventListener("submit", async (e) => {
+        registerNewWorkForm.addEventListener("submit", async (e) => {
           e.preventDefault();
           let error = false;
-          let subirImagenes = true;
+          let uploadImages = true;
           let data = {};
 
           const imageFields = document.querySelectorAll(".imagen-campo");
@@ -468,13 +477,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           imageFields.forEach((contenedor, i) => {
-            const inputImagen = contenedor.querySelector(`#image${i + 1}`);
+            const imageInput = contenedor.querySelector(`#image${i + 1}`);
             const inputDescripcion = contenedor.querySelector(
               `#descriptionImage${i + 1}`
             );
-            const selectedImage = inputImagen.files
-              ? inputImagen.files[0]
-              : null;
+            const selectedImage = imageInput.files ? imageInput.files[0] : null;
 
             if (!error && !selectedImage) {
               error = true;
@@ -484,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }`,
                 errorIcon
               );
-              subirImagenes = false;
+              uploadImages = false;
             } else {
               const selectedImageName = selectedImage
                 ? selectedImage.name
@@ -546,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
               contenedor.classList.contains("invalid")
             )
           ) {
-            validacionExitosa = false;
+            successfulValidation = false;
           }
 
           if (!error && workDescription.trim() === "") {
@@ -557,9 +564,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
           }
 
-          if (!error && subirImagenes) {
+          if (!error && uploadImages) {
             // Asignar datos del formulario
-            validacionExitosa = true;
+            successfulValidation = true;
             data.workName = workName;
             data.location = location;
             data.startdate = startdate;

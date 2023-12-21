@@ -6,6 +6,7 @@ import {
   collection,
   getFirestore,
   addDoc,
+  getDoc,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 import {
   getAuth,
@@ -75,6 +76,10 @@ export const saveWork = async (data) => {
     console.error("Error al guardar la obra:", error);
     throw error; // Relanza el error para que pueda ser manejado en el código que llama a saveWork
   }
+};
+
+export const getWorks = () => {
+  getDoc(collection(db, "works"));
 };
 
 export const uploadFile = async (file) => {
