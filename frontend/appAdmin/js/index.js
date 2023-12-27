@@ -100,9 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (document.URL.includes("dashboard.html")) {
-        // Obteniendo obras de la base de datos
-        // const querySnapshot = await getWorks();
-
         const body = document.querySelector("body");
         const buttonCloseSession = document.querySelector(".close-session");
         const createNewWork = document.createElement("a");
@@ -123,56 +120,71 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "index.html";
         });
 
-        let lengthProjects = 0;
         let labels = ["ID", "Título", "Editar", "Eliminar"];
 
-        if (lengthProjects > 0) {
-          const registerWork = document.createElement("section");
-          registerWork.classList.add("register-work");
-          body.appendChild(registerWork);
-          registerWork.appendChild(createNewWork);
-          const myWorks = document.createElement("section");
-          myWorks.classList.add("my-works");
-          const table = document.createElement("table");
-          const tr = document.createElement("tr");
-          table.appendChild(tr);
+        const fetchWorksAndPrint = async () => {
+          try {
+            // Llamas a la función getWorks con el nombre de la colección
+            const works = await getWorks();
 
-          for (let i = 0; i < labels.length; i++) {
-            const th = document.createElement("th");
-            th.textContent = labels[i];
-            tr.appendChild(th);
+            console.log(works);
+
+            // Obtén la longitud de los trabajos
+            const lengthWorks = works.length;
+
+            if (lengthWorks > 0 && works) {
+              const registerWork = document.createElement("section");
+              registerWork.classList.add("register-work");
+              body.appendChild(registerWork);
+              registerWork.appendChild(createNewWork);
+              const myWorks = document.createElement("section");
+              myWorks.classList.add("my-works");
+              const table = document.createElement("table");
+              const tr = document.createElement("tr");
+              table.appendChild(tr);
+
+              for (let i = 0; i < labels.length; i++) {
+                const th = document.createElement("th");
+                th.textContent = labels[i];
+                tr.appendChild(th);
+              }
+
+              for (let i = 0; i < lengthWorks; i++) {
+                const newRow = document.createElement("tr");
+
+                newRow.innerHTML = `
+                <td class="id-work">${i + 1}</td>
+                <td>${works[i].workName}</td>
+                <td>
+                    <a href="#" class="edit-work">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#" class="delete-work"><i class="fa-solid fa-trash"></i></a>
+                </td>
+               `;
+                table.appendChild(newRow);
+              }
+              myWorks.appendChild(table);
+              body.appendChild(myWorks);
+            } else {
+              const noWorksYet = document.createElement("section");
+              noWorksYet.classList.add("no-works-yet-container");
+              body.appendChild(noWorksYet);
+              const titleNoWorksYet = document.createElement("h2");
+              titleNoWorksYet.classList.add("title-no-works");
+              titleNoWorksYet.textContent =
+                "No has publicado ninguna obra todavía. Ház una";
+              noWorksYet.appendChild(titleNoWorksYet);
+              noWorksYet.appendChild(createNewWork);
+            }
+          } catch (error) {
+            console.error("Error al obtener los datos:", error);
           }
+        };
 
-          for (let i = 0; i < lengthProjects; i++) {
-            const newRow = document.createElement("tr");
-
-            newRow.innerHTML = `
-            <td class="id-work">${i + 1}</td>
-            <td>Alfreds Futterkiste</td>
-            <td>
-                <a href="#" class="edit-work">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </a>
-            </td>
-            <td>
-                <a href="#" class="delete-work"><i class="fa-solid fa-trash"></i></a>
-            </td>
-           `;
-            table.appendChild(newRow);
-          }
-          myWorks.appendChild(table);
-          body.appendChild(myWorks);
-        } else {
-          const noWorksYet = document.createElement("section");
-          noWorksYet.classList.add("no-works-yet-container");
-          body.appendChild(noWorksYet);
-          const titleNoWorksYet = document.createElement("h2");
-          titleNoWorksYet.classList.add("title-no-works");
-          titleNoWorksYet.textContent =
-            "No has publicado ninguna obra todavía. Ház una";
-          noWorksYet.appendChild(titleNoWorksYet);
-          noWorksYet.appendChild(createNewWork);
-        }
+        fetchWorksAndPrint();
 
         const editButtons = document.querySelectorAll("a.edit-work");
         const deleteButtons = document.querySelectorAll("a.delete-work");

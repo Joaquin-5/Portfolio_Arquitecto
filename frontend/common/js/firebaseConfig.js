@@ -6,7 +6,7 @@ import {
   collection,
   getFirestore,
   addDoc,
-  getDoc,
+  getDocs,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 import {
   getAuth,
@@ -78,8 +78,13 @@ export const saveWork = async (data) => {
   }
 };
 
-export const getWorks = () => {
-  getDoc(collection(db, "works"));
+export const getWorks = async () => {
+  let works = [];
+  const querySnapshot = await getDocs(collection(db, "works"));
+  querySnapshot.forEach((doc) => {
+    works.push({...doc.data()});
+  });
+  return works;
 };
 
 export const uploadFile = async (file) => {
