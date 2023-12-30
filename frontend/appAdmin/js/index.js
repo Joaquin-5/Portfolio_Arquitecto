@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const body = document.querySelector("body");
         const buttonCloseSession = document.querySelector(".close-session");
         const loadingMessage = document.getElementById("loading-message");
+        loadingMessage.style.display = "block";
         const createNewWork = document.createElement("a");
         createNewWork.setAttribute("href", "./registerWork.html");
         createNewWork.classList.add("create-work");
@@ -120,8 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const fetchWorksAndPrint = async () => {
           try {
-            loadingMessage.style.display = "block";
-
             // Llamas a la función getWorks con el nombre de la colección
             const works = await getWorks();
 
