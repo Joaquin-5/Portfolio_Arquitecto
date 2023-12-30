@@ -78,11 +78,19 @@ export const saveWork = async (data) => {
   }
 };
 
+export const getWorkById = () => {};
+
 export const getWorks = async () => {
   let works = [];
   const querySnapshot = await getDocs(collection(db, "works"));
   querySnapshot.forEach((doc) => {
-    works.push({...doc.data()});
+    // Id del documento
+    const id = doc.id;
+
+    // Datos del documento
+    const data = doc.data();
+
+    works.push({ id, ...data });
   });
   return works;
 };

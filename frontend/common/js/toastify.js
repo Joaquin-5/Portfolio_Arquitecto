@@ -1,3 +1,9 @@
+// Icons
+export const okIcon =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
+export const errorIcon =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
+
 export const showToastify = (message, avatarHTML = "") => {
   Toastify({
     text: message,

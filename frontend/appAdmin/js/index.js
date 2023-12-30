@@ -5,17 +5,12 @@ import {
   getWorks,
   uploadFile,
 } from "../../common/js/firebaseConfig.js";
-import { showToastify } from "../../common/js/toastify.js";
+import { okIcon, errorIcon, showToastify } from "../../common/js/toastify.js";
 
 import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
-
-const okIcon =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/800px-Eo_circle_green_checkmark.svg.png";
-const errorIcon =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
 
 const auth = getAuth();
 
@@ -102,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (document.URL.includes("dashboard.html")) {
         const body = document.querySelector("body");
         const buttonCloseSession = document.querySelector(".close-session");
+        const loadingMessage = document.getElementById("loading-message");
         const createNewWork = document.createElement("a");
         createNewWork.setAttribute("href", "./registerWork.html");
         createNewWork.classList.add("create-work");
@@ -124,6 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const fetchWorksAndPrint = async () => {
           try {
+            loadingMessage.style.display = "block";
+
             // Llamas a la función getWorks con el nombre de la colección
             const works = await getWorks();
 
@@ -153,15 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newRow = document.createElement("tr");
 
                 newRow.innerHTML = `
-                <td class="id-work">${i + 1}</td>
+                <td class="id-work">${works[i].id}</td>
                 <td>${works[i].workName}</td>
                 <td>
-                    <a href="#" class="edit-work">
+                    <a href="#" class="edit-work" data-work-id=${works[i].id}>
                       <i class="fa-solid fa-pen-to-square"></i>
                     </a>
                 </td>
                 <td>
-                    <a href="#" class="delete-work"><i class="fa-solid fa-trash"></i></a>
+                    <a href="#" class="delete-work" data-work-id=${works[i].id}><i class="fa-solid fa-trash"></i></a>
                 </td>
                `;
                 table.appendChild(newRow);
@@ -179,28 +177,35 @@ document.addEventListener("DOMContentLoaded", () => {
               noWorksYet.appendChild(titleNoWorksYet);
               noWorksYet.appendChild(createNewWork);
             }
+
+            const editButtons = document.querySelectorAll("a.edit-work");
+            const deleteButtons = document.querySelectorAll("a.delete-work");
+            const idWork = document.querySelectorAll("td.id-work");
+
+            editButtons.forEach((nodo) => {
+              nodo.addEventListener("click", () => {
+                const idWork = nodo.dataset.workId;
+                alert("Se hizo click en editar obra con el id: " + idWork);
+              });
+            });
+
+            deleteButtons.forEach((nodo) => {
+              nodo.addEventListener("click", () => {
+                const idWork = nodo.dataset.workId;
+                confirm(
+                  "Estás seguro que querés borrar la obra con el id: " + idWork
+                );
+              });
+            });
           } catch (error) {
             console.error("Error al obtener los datos:", error);
+          } finally {
+            // Oculta el mensaje de carga después de obtener los datos o en caso de error
+            loadingMessage.style.display = "none";
           }
         };
 
         fetchWorksAndPrint();
-
-        const editButtons = document.querySelectorAll("a.edit-work");
-        const deleteButtons = document.querySelectorAll("a.delete-work");
-        const idWork = document.querySelectorAll("td.id-work");
-
-        editButtons.forEach((nodo) => {
-          nodo.addEventListener("click", () => {
-            alert("Se hizo click en editar obra con el id " + idWork);
-          });
-        });
-
-        deleteButtons.forEach((nodo) => {
-          nodo.addEventListener("click", () => {
-            alert("Se hizo click en eliminar obra con el id " + idWork);
-          });
-        });
       }
 
       if (document.URL.includes("registerWork.html")) {

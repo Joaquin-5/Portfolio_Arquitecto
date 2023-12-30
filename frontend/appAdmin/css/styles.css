@@ -21,6 +21,10 @@ h1 {
   cursor: pointer;
 }
 
+#loading-message {
+  display: none;
+}
+
 form {
   width: 300px;
   display: flex;
