@@ -4,6 +4,7 @@ import {
   saveWork,
   getWorks,
   uploadFile,
+  deleteWork,
 } from "../../common/js/firebaseConfig.js";
 import { okIcon, errorIcon, showToastify } from "../../common/js/toastify.js";
 
@@ -179,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const editButtons = document.querySelectorAll("a.edit-work");
             const deleteButtons = document.querySelectorAll("a.delete-work");
-            const idWork = document.querySelectorAll("td.id-work");
 
             editButtons.forEach((nodo) => {
               nodo.addEventListener("click", () => {
@@ -189,11 +189,22 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             deleteButtons.forEach((nodo) => {
-              nodo.addEventListener("click", () => {
+              nodo.addEventListener("click", async () => {
                 const idWork = nodo.dataset.workId;
-                confirm(
-                  "Estás seguro que querés borrar la obra con el id: " + idWork
+                const result = confirm(
+                  "¿Estás seguro que querés borrar la obra con el id: " + idWork
                 );
+                if (result) {
+                  try {
+                    await deleteWork(idWork);
+                    // Elimina la fila de la tabla correspondiente al trabajo eliminado
+                    nodo.closest("tr").remove();
+                    showToastify("Obra eliminada exitosamente", okIcon);
+                  } catch (error) {
+                    console.error("Error al eliminar la obra:", error);
+                    showToastify("Error al eliminar la obra", errorIcon);
+                  }
+                }
               });
             });
           } catch (error) {

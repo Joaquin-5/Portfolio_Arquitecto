@@ -5,8 +5,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebas
 import {
   collection,
   getFirestore,
+  doc,
   addDoc,
   getDocs,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 import {
   getAuth,
@@ -93,6 +95,16 @@ export const getWorks = async () => {
     works.push({ id, ...data });
   });
   return works;
+};
+
+export const deleteWork = async (workId) => {
+  try {
+    // Elimina el documento utilizando el ID único
+    const workRef = doc(db, "works", workId);
+    await deleteDoc(workRef);
+  } catch (error) {
+    console.error("Error al eliminar el trabajo:", error);
+  }
 };
 
 export const uploadFile = async (file) => {
