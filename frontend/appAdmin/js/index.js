@@ -2,6 +2,7 @@ import {
   loginAdmin,
   logoutAdmin,
   saveWork,
+  getWorkById,
   getWorks,
   uploadFile,
   deleteWork,
@@ -184,7 +185,11 @@ document.addEventListener("DOMContentLoaded", () => {
             editButtons.forEach((nodo) => {
               nodo.addEventListener("click", () => {
                 const idWork = nodo.dataset.workId;
+
                 alert("Se hizo click en editar obra con el id: " + idWork);
+
+                // Redirigir al formulario de edición y pasar el ID como parámetro
+                window.location.href = `editWork.html?id=${idWork}`;
               });
             });
 
@@ -629,6 +634,23 @@ document.addEventListener("DOMContentLoaded", () => {
               });
           }
         });
+      }
+
+      if (document.URL.includes("editWork.html")) {
+        // Extraer parámetro 'id' de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const workId = urlParams.get("id");
+
+        if (workId) {
+          getWorkById(workId).then((workData) => {
+            console.log(workData);
+            
+          });
+        } else {
+          console.error("ID de obra no encontrado en la URL");
+        }
+
+        console.log(workId);
       }
     } else {
       if (!window.location.href.includes("index.html")) {

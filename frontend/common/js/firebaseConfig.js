@@ -7,6 +7,7 @@ import {
   getFirestore,
   doc,
   addDoc,
+  getDoc,
   getDocs,
   deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
@@ -80,7 +81,22 @@ export const saveWork = async (data) => {
   }
 };
 
-export const getWorkById = () => {};
+export const getWorkById = async (workId) => {
+  try {
+    const workRef = doc(db, "works", workId);
+    const workDoc = await getDoc(workRef);
+
+    if (workDoc.exists()) {
+      return workDoc.data();
+    } else {
+      console.log("No existe la obra con el ID proporcionado");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error al obtener la obra:", error);
+    return null;
+  }
+};
 
 export const getWorks = async () => {
   let works = [];
