@@ -223,7 +223,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchWorksAndPrint();
       }
 
-      if (document.URL.includes("registerWork.html")) {
+      if (
+        document.URL.includes("registerWork.html") ||
+        document.URL.includes("editWork.html")
+      ) {
         let editedForm = false;
         let successfulValidation = false;
         let counterImages =
@@ -467,7 +470,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           let workName = nombreObra.value;
           let location = ubicacion.value;
-          let startdate = diaInicio.value;
+          let startDate = diaInicio.value;
           let endDate = diaFinalizacion.value;
           let workDescription = descripcionObra.value;
 
@@ -495,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
           }
 
-          if (!error && startdate.trim() === "") {
+          if (!error && startDate.trim() === "") {
             error = true;
             showToastify("La fecha de inicio no puede estar vacía", errorIcon);
           }
@@ -601,7 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
             successfulValidation = true;
             data.workName = workName;
             data.location = location;
-            data.startdate = startdate;
+            data.startDate = startDate;
             data.endDate = endDate;
             data.workDescription = workDescription;
 
@@ -640,17 +643,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // Extraer parámetro 'id' de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const workId = urlParams.get("id");
+        const camposImagenes = document.getElementById("camposImagenes");
+        console.log(workId);
 
         if (workId) {
           getWorkById(workId).then((workData) => {
             console.log(workData);
-            
+            document.getElementById("title").value = workData.workName;
+            document.getElementById("location").value = workData.location;
+            document.getElementById("startdate").value = workData.startdate;
+            document.getElementById("enddate").value = workData.endDate;
+            camposImagenes.forEach((campo, index) => {
+
+            });
+            document.getElementById("descriptionWork").value =
+              workData.descriptionWork;
           });
         } else {
           console.error("ID de obra no encontrado en la URL");
         }
-
-        console.log(workId);
       }
     } else {
       if (!window.location.href.includes("index.html")) {
