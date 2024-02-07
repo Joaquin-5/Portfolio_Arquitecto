@@ -186,8 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
               nodo.addEventListener("click", () => {
                 const idWork = nodo.dataset.workId;
 
-                alert("Se hizo click en editar obra con el id: " + idWork);
-
                 // Redirigir al formulario de edición y pasar el ID como parámetro
                 window.location.href = `editWork.html?id=${idWork}`;
               });
@@ -643,7 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Extraer parámetro 'id' de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const workId = urlParams.get("id");
-        const camposImagenes = document.getElementById("camposImagenes");
         console.log(workId);
 
         if (workId) {
@@ -653,11 +650,87 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("location").value = workData.location;
             document.getElementById("startdate").value = workData.startdate;
             document.getElementById("enddate").value = workData.endDate;
-            camposImagenes.forEach((campo, index) => {
 
+            // Obtener el primer campo de imagen existente
+            const existingImageField = document.querySelector(".imagen-campo");
+
+            if (existingImageField) {
+              // Asignar valores al campo de imagen existente
+              const existingImageInput =
+                existingImageField.querySelector(".image_file__input");
+              existingImageInput.name = "image1"; // Asegúrate de que este valor sea correcto según tu lógica
+              const existingDescriptionInput = existingImageField.querySelector(
+                ".image-description__input"
+              );
+              existingDescriptionInput.name = "descriptionImage1"; // Asegúrate de que este valor sea correcto según tu lógica
+              existingDescriptionInput.value =
+                workData.imagesData[0].descriptionImage; // Asigna la descripción de la primera imagen
+
+              // Aquí puedes manejar el nombre del archivo de la imagen si es necesario
+              const existingImageName = workData.imagesData[0].image;
+              // ...
+
+              // Eliminar el primer campo del array de imágenes ya que hemos llenado el campo existente
+              workData.imagesData.shift();
+            }
+
+            // Ahora maneja los campos adicionales de imágenes como antes
+            const camposImagenes = document.getElementById("camposImagenes");
+            let counterImages = camposImagenes.childElementCount;
+
+            // Iterar sobre el arreglo de campos
+            workData.imagesData.forEach((campo, index) => {
+              // Incrementar el contador de imágenes
+              counterImages++;
+
+              // Crea un nuevo campo
+              const newField = document.createElement("div");
+              newField.classList.add("imagen-campo");
+              newField.classList.add(`imagen-campo-${index + 1}`);
+
+              // Inserta el HTML con el nombre de la imagen y la descripción
+              newField.insertAdjacentHTML(
+                "beforeend",
+                `
+                  <label for="image${counterImages}" class="image-file__label">Imagen ${counterImages}:</label>
+                  <input type="file" id="image${counterImages}" name="image${counterImages}" accept="image/*" class="image_file__input"/>
+                  <label for="descriptionImage${counterImages}" class="image-description__label">Descripción de la imágen ${counterImages} (máx. 50 caracteres):</label>
+                  <input type="text" id="descriptionImage${counterImages}" name="descriptionImage${counterImages}" placeholder="Descripcion de la imágen"/>
+                  <span class="contadorCaracteres">0 / 50</span>
+                  <button type="button" class="eliminarCampo">Eliminar</button>
+                `
+              );
+
+              // Asigna el valor al campo de la descripción
+              const inputDescripcion = newField.querySelector(
+                `#descriptionImage${counterImages}`
+              );
+              inputDescripcion.value = campo.descriptionImage;
+
+              // Agrega el evento de eliminar al botón
+              const eliminarBoton = newField.querySelector(".eliminarCampo");
+              eliminarBoton.addEventListener("click", () => {
+                camposImagenes.removeChild(newField);
+              });
+
+              // Agrega el nuevo campo al contenedor de campos de imágenes
+              camposImagenes.appendChild(newField);
+
+              // Agrega evento de conteo de caracteres a la descripción
+              const nuevoInput = newField.querySelector(
+                `#descriptionImage${counterImages}`
+              );
+              const nuevoContador = newField.querySelector(
+                ".contadorCaracteres"
+              );
+
+              nuevoInput.addEventListener("input", () => {
+                actualizarContador(nuevoInput, nuevoContador, newField);
+              });
             });
+
             document.getElementById("descriptionWork").value =
-              workData.descriptionWork;
+              workData.workDescription;
           });
         } else {
           console.error("ID de obra no encontrado en la URL");
