@@ -152,16 +152,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newRow = document.createElement("tr");
 
                 newRow.innerHTML = `
-                <td class="id-work">${works[i].id}</td>
-                <td>${works[i].workName}</td>
-                <td>
-                    <a href="#" class="edit-work" data-work-id=${works[i].id}>
-                      <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                </td>
-                <td>
-                    <a href="#" class="delete-work" data-work-id=${works[i].id}><i class="fa-solid fa-trash"></i></a>
-                </td>
+                  <td class="id-work">${works[i].id}</td>
+                  <td>${works[i].workName}</td>
+                  <td>
+                      <a href="#" class="edit-work" data-work-id="${works[i].id}">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </a>
+                  </td>
+                  <td>
+                      <a href="#" class="delete-work" data-work-id="${works[i].id}" data-work-name="${works[i].workName}"><i class="fa-solid fa-trash"></i></a>
+                  </td>
                `;
                 table.appendChild(newRow);
               }
@@ -192,10 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             deleteButtons.forEach((nodo) => {
-              nodo.addEventListener("click", async () => {
+              nodo.addEventListener("click", async (e) => {
+                e.preventDefault(); // Evita que el navegador siga el enlace predeterminado
                 const idWork = nodo.dataset.workId;
+                const workName = nodo.dataset.workName;
                 const result = confirm(
-                  "¿Estás seguro que querés borrar la obra con el id: " + idWork
+                  `¿Estás seguro que querés borrar la obra con el id: ${idWork} y título: ${workName}?`
                 );
                 if (result) {
                   try {
@@ -222,8 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (
-        document.URL.includes("registerWork.html") ||
-        document.URL.includes("editWork.html")
+        document.URL.includes("registerWork.html")
       ) {
         let editedForm = false;
         let successfulValidation = false;
@@ -408,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        // Lo hago también para le fecha de finalización por si el usuario ingresa primero la de finalización. Aunque no se el flujo del programa
+        // Lo hago también para le fecha de finalización por si el usuario ingresa primero la de finalización. Aunque no sea el flujo del programa
         fechaInicio.addEventListener("change", () => {
           const fechaInicioValue = new Date(fechaInicio.value);
           const fechaFinValue = new Date(fechaFin.value);
@@ -624,7 +625,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // Llamada a saveWork y redirección después de que se complete
             saveWork(data)
               .then(() => {
-                showToastify("La obra fue creada correctamente", okIcon);
+                if (document.URL.includes("registerWork.html")) {
+                  showToastify("La obra fue creada correctamente", okIcon);
+                } else {
+                  showToastify("La obra fue editada correctamente", okIcon);
+                }
                 setTimeout(() => {
                   window.location.href = "dashboard.html";
                 }, 2000);
@@ -651,83 +656,80 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("startdate").value = workData.startdate;
             document.getElementById("enddate").value = workData.endDate;
 
-            // Obtener el primer campo de imagen existente
-            const existingImageField = document.querySelector(".imagen-campo");
-
-            if (existingImageField) {
-              // Asignar valores al campo de imagen existente
-              const existingImageInput =
-                existingImageField.querySelector(".image_file__input");
-              existingImageInput.name = "image1"; // Asegúrate de que este valor sea correcto según tu lógica
-              const existingDescriptionInput = existingImageField.querySelector(
-                ".image-description__input"
-              );
-              existingDescriptionInput.name = "descriptionImage1"; // Asegúrate de que este valor sea correcto según tu lógica
-              existingDescriptionInput.value =
-                workData.imagesData[0].descriptionImage; // Asigna la descripción de la primera imagen
-
-              // Aquí puedes manejar el nombre del archivo de la imagen si es necesario
-              const existingImageName = workData.imagesData[0].image;
-              // ...
-
-              // Eliminar el primer campo del array de imágenes ya que hemos llenado el campo existente
-              workData.imagesData.shift();
-            }
-
-            // Ahora maneja los campos adicionales de imágenes como antes
             const camposImagenes = document.getElementById("camposImagenes");
-            let counterImages = camposImagenes.childElementCount;
 
-            // Iterar sobre el arreglo de campos
-            workData.imagesData.forEach((campo, index) => {
-              // Incrementar el contador de imágenes
-              counterImages++;
+            // Función para crear un campo de imagen
+            const crearCampoImagen = (index, imageUrl, description) => {
+              const campoImagen = document.createElement("div");
+              campoImagen.classList.add("imagen-campo");
 
-              // Crea un nuevo campo
-              const newField = document.createElement("div");
-              newField.classList.add("imagen-campo");
-              newField.classList.add(`imagen-campo-${index + 1}`);
-
-              // Inserta el HTML con el nombre de la imagen y la descripción
-              newField.insertAdjacentHTML(
+              campoImagen.insertAdjacentHTML(
                 "beforeend",
                 `
-                  <label for="image${counterImages}" class="image-file__label">Imagen ${counterImages}:</label>
-                  <input type="file" id="image${counterImages}" name="image${counterImages}" accept="image/*" class="image_file__input"/>
-                  <label for="descriptionImage${counterImages}" class="image-description__label">Descripción de la imágen ${counterImages} (máx. 50 caracteres):</label>
-                  <input type="text" id="descriptionImage${counterImages}" name="descriptionImage${counterImages}" placeholder="Descripcion de la imágen"/>
+                  <label for="image${index}" class="image-file__label">Imagen ${index}:</label>
+                  <img src="${imageUrl}" alt="Imagen ${index}" class="image-preview"/>
+                  <input type="file" id="image${index}" name="image${index}" accept="image/*" class="image_file__input"/>
+                  <input type="text" id="imageName${index}" class="image-name__input" readonly value="${imageUrl.substring(
+                    imageUrl.lastIndexOf("/") + 1
+                  )}"/>
+                  <label for="descriptionImage${index}" class="image-description__label">Descripción de la imagen ${index} (máx. 50 caracteres):</label>
+                  <input type="text" id="descriptionImage${index}" name="descriptionImage${index}" placeholder="Descripción de la imagen" class="image-description__input" value="${description}"/>
                   <span class="contadorCaracteres">0 / 50</span>
                   <button type="button" class="eliminarCampo">Eliminar</button>
                 `
               );
-
-              // Asigna el valor al campo de la descripción
-              const inputDescripcion = newField.querySelector(
-                `#descriptionImage${counterImages}`
-              );
-              inputDescripcion.value = campo.descriptionImage;
-
-              // Agrega el evento de eliminar al botón
-              const eliminarBoton = newField.querySelector(".eliminarCampo");
+              const eliminarBoton = campoImagen.querySelector(".eliminarCampo");
               eliminarBoton.addEventListener("click", () => {
-                camposImagenes.removeChild(newField);
+                camposImagenes.removeChild(campoImagen);
               });
 
-              // Agrega el nuevo campo al contenedor de campos de imágenes
-              camposImagenes.appendChild(newField);
+              camposImagenes.appendChild(campoImagen);
 
               // Agrega evento de conteo de caracteres a la descripción
-              const nuevoInput = newField.querySelector(
-                `#descriptionImage${counterImages}`
+              const descripcionInput = campoImagen.querySelector(
+                `.image-description__input`
               );
-              const nuevoContador = newField.querySelector(
-                ".contadorCaracteres"
-              );
+              const contador = campoImagen.querySelector(".contadorCaracteres");
 
-              nuevoInput.addEventListener("input", () => {
-                actualizarContador(nuevoInput, nuevoContador, newField);
+              descripcionInput.addEventListener("input", () => {
+                actualizarContador(descripcionInput, contador, campoImagen);
               });
-            });
+
+              // Agrega evento para abrir el navegador de archivos al hacer clic en la imagen
+              const imagenPreview = campoImagen.querySelector(".image-preview");
+              imagenPreview.addEventListener("click", () => {
+                campoImagen.querySelector(`.image_file__input`).click();
+              });
+
+              // Agrega evento para actualizar la vista previa de la imagen
+              const inputFile = campoImagen.querySelector(`.image_file__input`);
+              inputFile.addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                    imagenPreview.src = e.target.result;
+                  };
+                  reader.readAsDataURL(file);
+                }
+              });
+            };
+
+            // Crear campo para la primera imagen
+            crearCampoImagen(
+              1,
+              workData.imagesData[0].image,
+              workData.imagesData[0].descriptionImage
+            );
+
+            // Crear campos para las imágenes adicionales
+            for (let i = 1; i < workData.imagesData.length; i++) {
+              crearCampoImagen(
+                i + 1,
+                workData.imagesData[i].image,
+                workData.imagesData[i].descriptionImage
+              );
+            }
 
             document.getElementById("descriptionWork").value =
               workData.workDescription;

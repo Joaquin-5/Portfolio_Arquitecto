@@ -116,6 +116,10 @@ form.register-work {
   align-items: center;
 }
 
+.imagen-campo img {
+  width: 100%;
+}
+
 form.register-work textarea {
   min-width: 100%;
   max-width: 100%;
