@@ -58,12 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
       switch (true) {
         case emailValue.trim() === "":
           error = true;
-          showToastify("Por favor, ingresa un correo electrónico.", errorIcon);
+          showToastify("Por favor, ingrese un correo electrónico.", errorIcon);
           break;
         case !regex.test(emailValue):
           error = true;
           showToastify(
-            "Por favor, ingresa un correo electrónico válido.",
+            "Por favor, ingrese un correo electrónico válido.",
             errorIcon
           );
           break;
@@ -667,17 +667,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 "beforeend",
                 `
                   <label for="image${index}" class="image-file__label">Imagen ${index}:</label>
-                  <img src="${imageUrl}" alt="Imagen ${index}" class="image-preview"/>
+                  <img src="${imageUrl}" alt="${description}" class="image-preview"/>
                   <input type="file" id="image${index}" name="image${index}" accept="image/*" class="image_file__input"/>
-                  <input type="text" id="imageName${index}" class="image-name__input" readonly value="${imageUrl.substring(
-                    imageUrl.lastIndexOf("/") + 1
-                  )}"/>
                   <label for="descriptionImage${index}" class="image-description__label">Descripción de la imagen ${index} (máx. 50 caracteres):</label>
                   <input type="text" id="descriptionImage${index}" name="descriptionImage${index}" placeholder="Descripción de la imagen" class="image-description__input" value="${description}"/>
                   <span class="contadorCaracteres">0 / 50</span>
                   <button type="button" class="eliminarCampo">Eliminar</button>
                 `
               );
+              
               const eliminarBoton = campoImagen.querySelector(".eliminarCampo");
               eliminarBoton.addEventListener("click", () => {
                 camposImagenes.removeChild(campoImagen);
@@ -737,6 +735,10 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           console.error("ID de obra no encontrado en la URL");
         }
+      }
+
+      if (document.URL.includes("editWork.html") || document.URL.includes("registerWork.html")) {
+
       }
     } else {
       if (!window.location.href.includes("index.html")) {
