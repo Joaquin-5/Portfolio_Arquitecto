@@ -4,6 +4,10 @@ export const okIcon =
 export const errorIcon =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Cross_red_circle.svg/1200px-Cross_red_circle.svg.png";
 
+// Íconos de font awesome que NO funcionaron
+// Icono de error de font awesome: '<i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>
+// Icono de OK de font awesome: <i class="fa-solid fa-circle-check" style="color: #107b10;"></i>'
+
 export const showToastify = (message, avatarHTML = "") => {
   Toastify({
     text: message,

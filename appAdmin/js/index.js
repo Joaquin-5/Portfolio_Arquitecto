@@ -473,9 +473,6 @@ document.addEventListener("DOMContentLoaded", () => {
           let endDate = diaFinalizacion.value;
           let workDescription = descripcionObra.value;
 
-          // Icono de error de font awesome: '<i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>
-          // Icono de OK de font awesome: <i class="fa-solid fa-circle-check" style="color: #107b10;"></i>'
-
           if (workName.trim() === "") {
             error = true;
             showToastify(
